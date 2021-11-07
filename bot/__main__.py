@@ -37,16 +37,16 @@ def stats(update, context):
             f'<b>Free:</b> <code>{free}</code>\n\n' \
             f'<b>Upload:</b> <code>{sent}</code>\n' \
             f'<b>Download:</b> <code>{recv}</code>\n\n' \
-            f'<b>CPU:</b> <code>{cpuUsage}%</code>' \
-            f'<b>RAM:</b> <code>{memory}%</code>' \
-            f'<b>DISK:</b> <code>{disk}%</code>'
+            f'<b>CPU:</b> <code>{cpuUsage}%</code>\n' \
+            f'<b>RAM:</b> <code>{memory}%</code>\n' \
+            f'<b>DISK:</b> <code>{disk}%</code>\n'
     sendMessage(stats, context.bot, update)
 
 
 def start(update, context):
     buttons = button_build.ButtonMaker()
-    buttons.buildbutton("Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
-    buttons.buildbutton("Group", "https://t.me/mirrorLeechTelegramBot")
+    buttons.buildbutton("Repo", "https://github.com/arshsisodiya/helios-mirror-public")
+    buttons.buildbutton("Support", "https://t.me/NmberSEVEN")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
@@ -83,8 +83,38 @@ def ping(update, context):
 def log(update, context):
     sendLogFile(context.bot, update)
 
+help_string_telegraph = f'''
+/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 
-help_string_telegraph = f'''<br>
+/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+
+/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+
+/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
+
+/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
+
+/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
+
+/{BotCommands.RestartCommand}: Restart the bot
+
+/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
+
+/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
+
+/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
+
+/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
+'''
+
+help = Telegraph(access_token=telegraph_token).create_page(
+        title='Helios-Mirror Help',
+        author_name='Helios-Mirror bot',
+        author_url='https://github.com/arshsisodiya/helios-mirror-public',
+        html_content=help_string_telegraph,
+    )["path"]
+
+help_string = f'''<br>
 <b>/{BotCommands.HelpCommand}</b>: To get this message
 <br><br>
 <b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Start mirroring the link to Google Drive.
@@ -121,11 +151,11 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
 <br><br>
-<b>/{BotCommands.LeechWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl 
+<b>/{BotCommands.LeechWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl
 <br><br>
-<b>/{BotCommands.LeechZipWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl and zip before uploading 
+<b>/{BotCommands.LeechZipWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl and zip before uploading
 <br><br>
-<b>/{BotCommands.LeechSetCommand}</b>: Leech Settings 
+<b>/{BotCommands.LeechSetCommand}</b>: Leech Settings
 <br><br>
 <b>/{BotCommands.SetThumbCommand}</b>: Reply photo to set it as Thumbnail
 <br><br>
@@ -140,36 +170,6 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
-'''
-help = Telegraph(access_token=telegraph_token).create_page(
-        title='Mirrorbot Help',
-        author_name='Mirrorbot',
-        author_url='https://github.com/anasty17/mirror-leech-telegram-bot',
-        html_content=help_string_telegraph,
-    )["path"]
-
-help_string = f'''
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
-
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
-
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
-
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
-
-/{BotCommands.RestartCommand}: Restart the bot
-
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
-
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
-
-/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
-
-/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
 '''
 
 def bot_help(update, context):
