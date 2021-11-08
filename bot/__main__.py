@@ -83,38 +83,8 @@ def ping(update, context):
 def log(update, context):
     sendLogFile(context.bot, update)
 
-help_string_telegraph = f'''<br>
-<b>/{BotCommands.PingCommand}:</b> Check how long it takes to Ping the Bot
-<br><br>
-<b>/{BotCommands.AuthorizeCommand}:</b> Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-<br><br>
-<b>/{BotCommands.UnAuthorizeCommand}:</b> Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-<br><br>
-<b>/{BotCommands.AuthorizedUsersCommand}:</b> Show authorized users (Only Owner & Sudo)
-<br><br>
-<b>/{BotCommands.AddSudoCommand}:</b> Add sudo user (Only Owner)
-<br><br>
-<b>/{BotCommands.RmSudoCommand}:</b>Remove sudo users (Only Owner)
-<br><br>
-<b>/{BotCommands.RestartCommand}:</b> Restart the bot
-<br><br>
-<b>/{BotCommands.LogCommand}:</b> Get a log file of the bot. Handy for getting crash reports
-<br><br>
-<b>/{BotCommands.SpeedCommand}:</b> Check Internet Speed of the Host
-<br><br>
-<b>/{BotCommands.ShellCommand}:</b> Run commands in Shell (Only Owner)
-<br><br>
-<b>/{BotCommands.ExecHelpCommand}:</b> Get help for Executor module (Only Owner)
-'''
-
-help = Telegraph(access_token=telegraph_token).create_page(
-        title='Helios-Mirror Help',
-        author_name='Helios-Mirror bot',
-        author_url='https://github.com/arshsisodiya/helios-mirror-public',
-        html_content=help_string_telegraph,
-    )["path"]
-
-help_string = f'''
+def bot_help(update, context):
+    help_string = f""""
 /{BotCommands.HelpCommand}: To get this message
 
 /{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive.
@@ -170,38 +140,34 @@ help_string = f'''
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
 
 /{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
-'''
+"""
+    sendMessage(help_string, context.bot, update)
 
-def bot_help(update, context):
-    button = button_build.ButtonMaker()
-    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
-    reply_markup = InlineKeyboardMarkup(button.build_menu(1))
-    sendMarkup(help_string, context.bot, update, reply_markup)
 
-'''
 botcmds = [
-        (f'{BotCommands.HelpCommand}','Get Detailed Help'),
-        (f'{BotCommands.MirrorCommand}', 'Start Mirroring'),
-        (f'{BotCommands.ZipMirrorCommand}','Start mirroring and upload as .zip'),
-        (f'{BotCommands.UnzipMirrorCommand}','Extract files'),
-        (f'{BotCommands.QbMirrorCommand}','Start Mirroring using qBittorrent'),
-        (f'{BotCommands.QbZipMirrorCommand}','Start mirroring and upload as .zip using qb'),
-        (f'{BotCommands.QbUnzipMirrorCommand}','Extract files using qBitorrent'),
-        (f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
-        (f'{BotCommands.CountCommand}','Count file/folder of Drive link'),
-        (f'{BotCommands.DeleteCommand}','Delete file from Drive'),
-        (f'{BotCommands.WatchCommand}','Mirror Youtube-dl support link'),
-        (f'{BotCommands.ZipWatchCommand}','Mirror Youtube playlist link as .zip'),
-        (f'{BotCommands.CancelMirror}','Cancel a task'),
-        (f'{BotCommands.CancelAllCommand}','Cancel all tasks'),
-        (f'{BotCommands.ListCommand}','Searches files in Drive'),
-        (f'{BotCommands.StatusCommand}','Get Mirror Status message'),
-        (f'{BotCommands.StatsCommand}','Bot Usage Stats'),
-        (f'{BotCommands.PingCommand}','Ping the Bot'),
-        (f'{BotCommands.RestartCommand}','Restart the bot [owner/sudo only]'),
-        (f'{BotCommands.LogCommand}','Get the Bot Log [owner/sudo only]')
-    ]
-'''
+    (f"{BotCommands.HelpCommand}", "Get detailed help"),
+    (f"{BotCommands.MirrorCommand}", "Start mirroring"),
+    (f"{BotCommands.LeechCommand}", "Start Leeching"),
+    (f"{BotCommands.UnzipLeechCommand}", "Extract files(Leech)"),
+    (f"{BotCommands.LeechWatchCommand}", "Mirror Youtube-dl support link(Leech)"),
+    (f"{BotCommands.LeechZipWatchCommand}", "Leech Youtube playlist link as .zip"),
+    (f"{BotCommands.ZipLeechCommand}", "Start mirroring and upload as .zip(Leech)"),
+    (f"{BotCommands.ZipMirrorCommand}", "Start mirroring and upload as .zip"),
+    (f"{BotCommands.UnzipMirrorCommand}", "Extract files"),
+    (f"{BotCommands.CloneCommand}", "Copy file/folder from GDrive"),
+    (f"{BotCommands.deleteCommand}", "Delete file from GDrive [owner only]"),
+    (f"{BotCommands.WatchCommand}", "Mirror Youtube-dl support link"),
+    (f"{BotCommands.ZipWatchCommand}", "Mirror Youtube playlist link as .zip"),
+    (f"{BotCommands.CancelMirror}", "Cancel a task"),
+    (f"{BotCommands.CancelAllCommand}", "Cancel all tasks [owner only]"),
+    (f"{BotCommands.CountCommand}", "Count files/folders of G-Drive Links"),
+    (f"{BotCommands.StatusCommand}", "Get mirror status"),
+    (f"{BotCommands.StatsCommand}", "Bot usage stats"),
+    (f"{BotCommands.SpeedCommand}", "Check Internet Speed of the Host"),
+    (f"{BotCommands.PingCommand}", "Ping the bot"),
+    (f"{BotCommands.RestartCommand}", "Restart the bot [owner only]"),
+    (f"{BotCommands.LogCommand}", "Get the bot log [owner only]"),
+]
 
 def main():
     fs_utils.start_cleanup()
