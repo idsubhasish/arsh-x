@@ -6,7 +6,7 @@ from bot.helper.telegram_helper.message_utils import *
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
+from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval, LOGS_CHATS
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, new_thread
 
 
@@ -75,6 +75,14 @@ def cloneNode(update, context):
             sendMessage(men + result, context.bot, update)
         else:
             sendMarkup(result + cc, context.bot, update, button)
+            if LOGS_CHATS:
+                try:
+                    for i in LOGS_CHATS:
+                        msg1 = f'<b>File Cloned: </b> <code>{name}</code>\n'
+                        msg1 += f'<b>By: </b>{uname}\n'
+                        bot.sendMessage(chat_id=i, text=msg1, reply_markup=button, parse_mode=ParseMode.HTML)
+                except Exception as e:
+                    LOGGER.warning(e)
     else:
         sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
 

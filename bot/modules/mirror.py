@@ -11,12 +11,12 @@ import time
 import shutil
 
 from telegram.ext import CommandHandler
-from telegram import InlineKeyboardMarkup
+from telegram import InlineKeyboardMarkup, ParseMode
 
 from bot import Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
                 BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, \
                 dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, SHORTENER, SHORTENER_API, \
-                ZIP_UNZIP_LIMIT, TG_SPLIT_SIZE
+                ZIP_UNZIP_LIMIT, TG_SPLIT_SIZE, LOGS_CHATS
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
@@ -296,6 +296,14 @@ class MirrorListener(listeners.MirrorListeners):
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
                 msg += f'\n\n<b>cc: </b>{uname}'
+                                if LOGS_CHATS:
+                    try:
+                        for i in LOGS_CHATS:
+                            msg1 = f'<b>File Uploaded: </b> <code>{download_dict[self.uid].name()}</code>\n'
+                            msg1 += f'<b>By: </b>{uname}\n'
+                            bot.sendMessage(chat_id=i, text=msg1, reply_markup=InlineKeyboardMarkup(buttons.build_menu(2)), parse_mode=ParseMode.HTML)
+                    except Exception as e:
+                        LOGGER.warning(e)
             try:
                 fs_utils.clean_download(download_dict[self.uid].path())
             except FileNotFoundError:
