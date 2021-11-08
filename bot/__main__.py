@@ -72,7 +72,6 @@ def restart(update, context):
     nox.kill()
     os.execl(executable, executable, "-m", "bot")
 
-
 def ping(update, context):
     start_time = int(round(time.time() * 1000))
     reply = sendMessage("Starting Ping", context.bot, update)
@@ -83,8 +82,72 @@ def ping(update, context):
 def log(update, context):
     sendLogFile(context.bot, update)
 
-def bot_help(update, context):
-    help_string = f""""
+
+help_string_telegraph = f'''<br>
+<b>/{BotCommands.HelpCommand}</b>: To get this message
+<br><br>
+<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Start mirroring the link to Google Drive.
+<br><br>
+<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
+<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Start Mirroring using qBittorrent, Use <b>/{BotCommands.QbMirrorCommand} s</b> to select files before downloading
+<br><br>
+<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
+<b>/{BotCommands.LeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram, Use <b>/{BotCommands.LeechCommand} s</b> to select files before leeching
+<br><br>
+<b>/{BotCommands.ZipLeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram and upload it as (.zip)
+<br><br>
+<b>/{BotCommands.UnzipLeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram and if downloaded file is any archive, extracts it to Telegram
+<br><br>
+<b>/{BotCommands.QbLeechCommand}</b> [magnet_link]: Start leeching to Telegram using qBittorrent, Use <b>/{BotCommands.QbLeechCommand} s</b> to select files before leeching
+<br><br>
+<b>/{BotCommands.QbZipLeechCommand}</b> [magnet_link]: Start leeching to Telegram using qBittorrent and upload it as (.zip)
+<br><br>
+<b>/{BotCommands.QbUnzipLeechCommand}</b> [magnet_link]: Start leeching to Telegram using qBittorrent and if downloaded file is any archive, extracts it to Telegram
+<br><br>
+<b>/{BotCommands.CloneCommand}</b> [drive_url]: Copy file/folder to Google Drive
+<br><br>
+<b>/{BotCommands.CountCommand}</b> [drive_url]: Count file/folder of Google Drive Links
+<br><br>
+<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.WatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl. Click <b>/{BotCommands.WatchCommand}</b> for more help
+<br><br>
+<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
+<br><br>
+<b>/{BotCommands.LeechWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl 
+<br><br>
+<b>/{BotCommands.LeechZipWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl and zip before uploading 
+<br><br>
+<b>/{BotCommands.LeechSetCommand}</b>: Leech Settings 
+<br><br>
+<b>/{BotCommands.SetThumbCommand}</b>: Reply photo to set it as Thumbnail
+<br><br>
+<b>/{BotCommands.CancelMirror}</b>: Reply to the message by which the download was initiated and that download will be cancelled
+<br><br>
+<b>/{BotCommands.CancelAllCommand}</b>: Cancel all running tasks
+<br><br>
+<b>/{BotCommands.ListCommand}</b> [query]: Search in Google Drive
+<br><br>
+<b>/{BotCommands.SearchCommand}</b> [query]: Search for torrents with installed qbittorrent search plugins
+<br><br>
+<b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
+<br><br>
+<b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+'''
+help = Telegraph(access_token=telegraph_token).create_page(
+        title='Helios Mirrorbot Help',
+        author_name='Helios Mirrorbot',
+        author_url='https://github.com/arshsisodiya/helios-mirror-public',
+        html_content=help_string_telegraph,
+    )["path"]
+
+help_string = f'''
 /{BotCommands.HelpCommand}: To get this message
 
 /{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive.
@@ -93,19 +156,19 @@ def bot_help(update, context):
 
 /{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Start mirroring and if downloaded file is any archive, extracts it to Google Drive
 
-/{BotCommands.QbMirrorCommand} [magnet_link]: Start Mirroring using qBittorrent, Use <b>/{BotCommands.QbMirrorCommand} s</b> to select files before downloading
+/{BotCommands.QbMirrorCommand} [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
 
 /{BotCommands.QbZipMirrorCommand} [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
 
-/{BotCommands.QbUnzipMirrorCommand}<[magnet_link]: Start mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
+/{BotCommands.QbUnzipMirrorCommand} [magnet_link]: Start mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
 
-/{BotCommands.LeechCommand} [download_url][magnet_link]: Start leeching to Telegram, Use <b>/{BotCommands.LeechCommand} s</b> to select files before leeching
+/{BotCommands.LeechCommand} [download_url][magnet_link]: Start leeching to Telegram, Use /{BotCommands.LeechCommand} s to select files before leeching
 
 /{BotCommands.ZipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and upload it as (.zip)
 
 /{BotCommands.UnzipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and if downloaded file is any archive, extracts it to Telegram
 
-/{BotCommands.QbLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent, Use <b>/{BotCommands.QbLeechCommand} s</b> to select files before leeching
+/{BotCommands.QbLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent, Use /{BotCommands.QbLeechCommand} s to select files before leeching
 
 /{BotCommands.QbZipLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent and upload it as (.zip)
 
@@ -117,15 +180,15 @@ def bot_help(update, context):
 
 /{BotCommands.DeleteCommand} [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
 
-/{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click <b>/{BotCommands.WatchCommand}</b> for more help
+/{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
 
 /{BotCommands.ZipWatchCommand} [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
 
-/{BotCommands.LeechWatchCommand} [youtube-dl supported link]: Leech through youtube-dl
+/{BotCommands.LeechWatchCommand} [youtube-dl supported link]: Leech through youtube-dl 
 
-/{BotCommands.LeechZipWatchCommand} [youtube-dl supported link]: Leech through youtube-dl and zip before uploading
+/{BotCommands.LeechZipWatchCommand} [youtube-dl supported link]: Leech through youtube-dl and zip before uploading 
 
-/{BotCommands.LeechSetCommand}: Leech Settings
+/{BotCommands.LeechSetCommand}: Leech Settings 
 
 /{BotCommands.SetThumbCommand}: Reply photo to set it as Thumbnail
 
@@ -140,35 +203,60 @@ def bot_help(update, context):
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
 
 /{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
-"""
-    sendMessage(help_string, context.bot, update)
 
+/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 
+/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+
+/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+
+/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
+
+/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
+
+/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
+
+/{BotCommands.RestartCommand}: Restart the bot
+
+/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
+
+/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
+
+/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
+
+/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
+'''
+
+def bot_help(update, context):
+    button = button_build.ButtonMaker()
+    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    reply_markup = InlineKeyboardMarkup(button.build_menu(1))
+    sendMarkup(help_string, context.bot, update, reply_markup)
+
+'''
 botcmds = [
-    (f"{BotCommands.HelpCommand}", "Get detailed help"),
-    (f"{BotCommands.MirrorCommand}", "Start mirroring"),
-    (f"{BotCommands.LeechCommand}", "Start Leeching"),
-    (f"{BotCommands.UnzipLeechCommand}", "Extract files(Leech)"),
-    (f"{BotCommands.LeechWatchCommand}", "Mirror Youtube-dl support link(Leech)"),
-    (f"{BotCommands.LeechZipWatchCommand}", "Leech Youtube playlist link as .zip"),
-    (f"{BotCommands.ZipLeechCommand}", "Start mirroring and upload as .zip(Leech)"),
-    (f"{BotCommands.ZipMirrorCommand}", "Start mirroring and upload as .zip"),
-    (f"{BotCommands.UnzipMirrorCommand}", "Extract files"),
-    (f"{BotCommands.CloneCommand}", "Copy file/folder from GDrive"),
-    (f"{BotCommands.deleteCommand}", "Delete file from GDrive [owner only]"),
-    (f"{BotCommands.WatchCommand}", "Mirror Youtube-dl support link"),
-    (f"{BotCommands.ZipWatchCommand}", "Mirror Youtube playlist link as .zip"),
-    (f"{BotCommands.CancelMirror}", "Cancel a task"),
-    (f"{BotCommands.CancelAllCommand}", "Cancel all tasks [owner only]"),
-    (f"{BotCommands.CountCommand}", "Count files/folders of G-Drive Links"),
-    (f"{BotCommands.StatusCommand}", "Get mirror status"),
-    (f"{BotCommands.StatsCommand}", "Bot usage stats"),
-    (f"{BotCommands.SpeedCommand}", "Check Internet Speed of the Host"),
-    (f"{BotCommands.PingCommand}", "Ping the bot"),
-    (f"{BotCommands.RestartCommand}", "Restart the bot [owner only]"),
-    (f"{BotCommands.LogCommand}", "Get the bot log [owner only]"),
-]
-
+        (f'{BotCommands.HelpCommand}','Get Detailed Help'),
+        (f'{BotCommands.MirrorCommand}', 'Start Mirroring'),
+        (f'{BotCommands.ZipMirrorCommand}','Start mirroring and upload as .zip'),
+        (f'{BotCommands.UnzipMirrorCommand}','Extract files'),
+        (f'{BotCommands.QbMirrorCommand}','Start Mirroring using qBittorrent'),
+        (f'{BotCommands.QbZipMirrorCommand}','Start mirroring and upload as .zip using qb'),
+        (f'{BotCommands.QbUnzipMirrorCommand}','Extract files using qBitorrent'),
+        (f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
+        (f'{BotCommands.CountCommand}','Count file/folder of Drive link'),
+        (f'{BotCommands.DeleteCommand}','Delete file from Drive'),
+        (f'{BotCommands.WatchCommand}','Mirror Youtube-dl support link'),
+        (f'{BotCommands.ZipWatchCommand}','Mirror Youtube playlist link as .zip'),
+        (f'{BotCommands.CancelMirror}','Cancel a task'),
+        (f'{BotCommands.CancelAllCommand}','Cancel all tasks'),
+        (f'{BotCommands.ListCommand}','Searches files in Drive'),
+        (f'{BotCommands.StatusCommand}','Get Mirror Status message'),
+        (f'{BotCommands.StatsCommand}','Bot Usage Stats'),
+        (f'{BotCommands.PingCommand}','Ping the Bot'),
+        (f'{BotCommands.RestartCommand}','Restart the bot [owner/sudo only]'),
+        (f'{BotCommands.LogCommand}','Get the Bot Log [owner/sudo only]')
+    ]
+'''
 def main():
     fs_utils.start_cleanup()
     if IS_VPS:
