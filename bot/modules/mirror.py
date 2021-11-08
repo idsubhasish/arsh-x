@@ -296,7 +296,7 @@ class MirrorListener(listeners.MirrorListeners):
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
                 msg += f'\n\n<b>cc: </b>{uname}'
-                                if LOGS_CHATS:
+                if LOGS_CHATS:
                     try:
                         for i in LOGS_CHATS:
                             msg1 = f'<b>File Uploaded: </b> <code>{download_dict[self.uid].name()}</code>\n'
