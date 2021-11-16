@@ -23,6 +23,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Mirror/Leech by reply (soon will add for watch and clone)
 - Search for torrents with variable plugins using qBittorrent search engine
 - Many bugs has been fixed
+- Force Subscribe bot
 
 ## From official and Other Repositories
 - Mirror direct download links, Torrent, and Telegram files to Google Drive
@@ -184,6 +185,20 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 - `BUTTON_SIX_NAME`:
 - `BUTTON_SIX_URL`:
 
+#Setup Force Subscriber Bot
+- Fill required configs in [forcesubConfig.py](https://github.com/arshsisodiya/helios-mirror-private/blob/helios-mirror/forcesubConfig.py)
+- after deploying the bot
+- Add the bot in group with ban user permission
+- Add the bot in Channel as Admin
+##Force Subscriber bot Command
+```
+forcesubscribe - To get current settings
+forcesubscribe no/off/disable - To turn off ForceSubscribe
+forcesubscribe {channel username or channel id} - To turn on force subscribe and setup the channel
+forcesubscribe clear - To unmute all members who muted by Force Subscriber bot
+
+Note - Fsub is alias of forcesubscriber
+```
 ## Bot commands to be set in [@BotFather](https://t.me/BotFather)
 
 ```
