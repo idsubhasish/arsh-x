@@ -139,6 +139,28 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+<br><br>
+<b>/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
+<br><br>
+<b>/{BotCommands.AuthorizeCommand}</b>: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.UnAuthorizeCommand}</b>: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.AuthorizedUsersCommand}</b>: Show authorized users (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.AddSudoCommand}</b>: Add sudo user (Only Owner)
+<br><br>
+<b>/{BotCommands.RmSudoCommand}</b>: Remove sudo users (Only Owner)
+<br><br>
+<b>/{BotCommands.RestartCommand}</b>: Restart the bot
+<br><br>
+<b>/{BotCommands.LogCommand}</b>: Get a log file of the bot. Handy for getting crash reports
+<br><br>
+<b>/{BotCommands.SpeedCommand}</b>: Check Internet Speed of the Host
+<br><br>
+<b>/{BotCommands.ShellCommand}</b>: Run commands in Shell (Only Owner)
+<br><br>
+<b>/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
 '''
 help = Telegraph(access_token=telegraph_token).create_page(
         title='Helios Mirrorbot Help',
@@ -148,8 +170,6 @@ help = Telegraph(access_token=telegraph_token).create_page(
     )["path"]
 
 help_string = f'''
-/{BotCommands.HelpCommand}: To get this message
-
 /{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive.
 
 /{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
@@ -158,27 +178,13 @@ help_string = f'''
 
 /{BotCommands.QbMirrorCommand} [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
 
-/{BotCommands.QbZipMirrorCommand} [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
-
-/{BotCommands.QbUnzipMirrorCommand} [magnet_link]: Start mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
-
 /{BotCommands.LeechCommand} [download_url][magnet_link]: Start leeching to Telegram, Use /{BotCommands.LeechCommand} s to select files before leeching
 
-/{BotCommands.ZipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and upload it as (.zip)
-
 /{BotCommands.UnzipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and if downloaded file is any archive, extracts it to Telegram
-
-/{BotCommands.QbLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent, Use /{BotCommands.QbLeechCommand} s to select files before leeching
-
-/{BotCommands.QbZipLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent and upload it as (.zip)
-
-/{BotCommands.QbUnzipLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent and if downloaded file is any archive, extracts it to Telegram
 
 /{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
 
 /{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
-
-/{BotCommands.DeleteCommand} [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
 
 /{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
 
@@ -186,45 +192,12 @@ help_string = f'''
 
 /{BotCommands.LeechWatchCommand} [youtube-dl supported link]: Leech through youtube-dl 
 
-/{BotCommands.LeechZipWatchCommand} [youtube-dl supported link]: Leech through youtube-dl and zip before uploading 
-
-/{BotCommands.LeechSetCommand}: Leech Settings 
-
-/{BotCommands.SetThumbCommand}: Reply photo to set it as Thumbnail
-
 /{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
-
-/{BotCommands.CancelAllCommand}: Cancel all running tasks
 
 /{BotCommands.ListCommand} [query]: Search in Google Drive
 
-/{BotCommands.SearchCommand} [query]: Search for torrents with installed qbittorrent search plugins
-
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
 
-/{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
-
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
-
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
-
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
-
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
-
-/{BotCommands.RestartCommand}: Restart the bot
-
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
-
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
-
-/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
-
-/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
 '''
 
 def bot_help(update, context):
