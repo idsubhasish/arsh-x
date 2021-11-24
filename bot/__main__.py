@@ -160,7 +160,7 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.ShellCommand}</b>: Run commands in Shell (Only Owner)
 <br><br>
-<b>/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
+<b>/{BotCommands.ExecHelpCommand}</b>: Get help for Executor module (Only Owner)
 '''
 help = Telegraph(access_token=telegraph_token).create_page(
         title='Helios Mirrorbot Help',
