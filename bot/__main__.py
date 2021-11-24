@@ -140,7 +140,7 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
 <br><br>
-<b>/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
+<b>/{BotCommands.PingCommand}</b>: Check how long it takes to Ping the Bot
 <br><br>
 <b>/{BotCommands.AuthorizeCommand}</b>: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
 <br><br>
