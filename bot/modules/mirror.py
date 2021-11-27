@@ -438,7 +438,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
 
     if bot_utils.is_gdrive_link(link):
         if not isZip and not extract and not isLeech:
-            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\nUse /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
+            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder \nUse /{BotCommands.CloneCommand} for Gdtot links \nUse /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
             return
         res, size, name, files = gdriveTools.GoogleDriveHelper().helper(link)
         if res != "":
