@@ -423,14 +423,15 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
         return
     elif not os.path.exists(link) and not bot_utils.is_mega_link(link) and not bot_utils.is_gdrive_link(link) and not bot_utils.is_magnet(link):
         try:
+            gdtot_link = bot_utils.is_gdtot_link(link)
             link = direct_link_generator(link)
         except DirectDownloadLinkException as e:
             LOGGER.info(e)
             if "ERROR:" in str(e):
-                sendMessage(f"{e}", bot, update)
+                sendMessage(str(e), bot, update)
                 return
             if "Youtube" in str(e):
-                sendMessage(f"{e}", bot, update)
+                sendMessage(str(e), bot, update)
                 return
 
     listener = MirrorListener(bot, update, pswd, isZip, extract, isQbit, isLeech)
@@ -457,6 +458,8 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
             download_dict[listener.uid] = download_status
         sendStatusMessage(update, bot)
         drive.download(link)
+        if gdtot_link:
+            drive.deletefile(link)
 
     elif bot_utils.is_mega_link(link):
         if BLOCK_MEGA_LINKS:

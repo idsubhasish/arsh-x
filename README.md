@@ -7,7 +7,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Select files from Torrent before downloading using qbittorrent
 - Leech (splitting, thumbnail for each user, setting as document or as media for each user)
 - Size limiting for Torrent/Direct, Zip/Unzip, Mega and Clone
-- Stop duplicates for all tasks except youtube-dl tasks 
+- Stop duplicates for all tasks except yt-dlp tasks
 - Zip/Unzip G-Drive links
 - Counting files/folders from Google Drive link
 - View Link button, extra button to open file index link in broswer instead of direct download
@@ -30,7 +30,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Mirror Mega.nz links to Google Drive (If you have non-premium Mega account, it will limit download to 5GB per 6 hours)
 - Copy files from someone's Drive to your Drive (Using Autorclone)
 - Download/Upload progress, Speeds and ETAs
-- Mirror all Youtube-dl supported links
+  Mirror all yt-dlp supported links
 - Docker support
 - Uploading to Team Drive
 - Index Link support
@@ -41,7 +41,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Multiple Trackers support
 - Shell and Executor
 - Sudo with or without Database
-- Custom Filename (Only for direct links, Telegram files and Youtube-dl. Not for Mega links, Gdrive links or Torrents)
+- Custom Filename* (Only for direct links, Telegram files and yt-dlp. Not for Mega links, Gdrive links or Torrents)
 - Extract or Compress password protected files.
 - Extract these filetypes and uploads to Google Drive
 ```
@@ -133,6 +133,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link. Archive the accounts folder to a zip file. Fill this with the direct link of that file.
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
 - `MULTI_SEARCH_URL`: run driveid.py [here](https://github.com/arshsisodiya/helios-mirror-private/blob/helios-mirror/driveid.py). Upload **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable.
+- `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only.
+- `NETRC_URL`: Use this incase you want to deploy heroku branch from without filling `UPSTREAM_REPO` variable, since after restart this file will cloned from github as empty file. Use gist raw link and remove commit id from the link, so you can edit it from gists only.
 **Note remove commit id from the link**
 
 **Example:** <br> <br>
@@ -169,6 +171,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `CUSTOM_FILENAME`: Add custom word to leeched file name.
 - `SHORTENER_API`: Fill your Shortener API key.
 - `SHORTENER`: Shortener URL.
+- `PHPSESSID` and `CRYPT`: Cookies for gdtot google drive link generator. Check setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#Gdtot Cookies)
 Supported URL Shorteners:
 ```
 exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly,
@@ -215,10 +218,10 @@ qbleech - Leech Torrent/Magnet using qBittorrent
 qbzipleech - Leech Torrent/Magnet and upload as .zip using qb
 qbunzipleech - Leech Torrent and extract using qb
 clone - Copy file/folder to Drive count - Count file/folder of Drive link
-watch - Mirror Youtube-dl supported link
-zipwatch - Mirror Youtube playlist link and upload as .zip
-leechwatch - Leech through Youtube-dl supported link
-leechzipwatch - Leech Youtube playlist link and upload as .zip
+watch - Mirror yt-dlp supported link
+zipwatch - Mirror playlist link and upload as .zip
+leechwatch - Leech through yt-dlp supported link
+leechzipwatch - Leech playlist link and upload as .zip
 leechset - Leech settings
 setthumb - Set Thumbnail
 status - Get Mirror Status message
@@ -381,14 +384,45 @@ MyTdName folderID/tdID IndexLink(if available)
 MyTdName2 folderID/tdID IndexLink(if available)
 ```
 
-# Youtube-dl and Index Authentication Using .netrc File
+## Yt-dlp and Index Authentication Using .netrc File
 For using your premium accounts in Youtube-dl or for protected Index Links, edit the netrc file according to following format:
+For using your premium accounts in yt-dlp or for protected Index Links, edit the netrc file according to following format:
 ```
 machine host login username password my_youtube_password
+machine host login username password my_password
 ```
+**Note**: For `youtube` authentication use [cookies.txt](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl) file.
+
 For Index Link with only password without username, even http auth will not work, so this is the solution.
 ```
 machine example.workers.dev password index_password
 ```
 Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
+Where host is the name of extractor (eg. Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
+---
+## Gdtot Cookies
+To Clone or Leech gdtot link follow these steps:
+1. Login/Register to [gdtot](https://new.gdtot.top)
+2. Copy this script and paste it in browser bar
+   ```
+   javascript:(function () {
+     const input = document.createElement('input');
+     input.value = JSON.stringify({url : window.location.href, cookie : document.cookie});
+     document.body.appendChild(input);
+     input.focus();
+     input.select();
+     var result = document.execCommand('copy');
+     document.body.removeChild(input);
+     if(result)
+       alert('Cookie copied to clipboard');
+     else
+       prompt('Failed to copy cookie. Manually copy below cookie\n\n', input.value);
+   })();
+   ```
+   - After pressing enter your browser will prompt a alert.
+3. Now you'll get this type of data in your clipboard
+   ```
+   {"url":"https://new.gdtot.org/","cookie":"PHPSESSID=k2xxxxxxxxxxxxxxxxxxxxj63o; crypt=NGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWdSVT0%3D"}
+   ```
+4. From this you have to paste value of PHPSESSID and crypt in config.env file.
