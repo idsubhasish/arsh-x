@@ -23,12 +23,12 @@ def cloneNode(update, context):
         link = ''
     gdtot_link = is_gdtot_link(link)
     if gdtot_link:
+        msg = sendMessage(f"Processing Gdtot Link.....:)
         try:
             link = gdtot(link)
-            msg = sendMessage(f"Processing Gdtot Link.....: \n<code>{gdtot_link}</code>", context.bot, update)
         except DirectDownloadLinkException as e:
             return sendMessage(str(e), context.bot, update)
-            deleteMessage(context.bot, msg)
+            deleteMessage(msg)
     if is_gdrive_link(link):
         gd = gdriveTools.GoogleDriveHelper()
         res, size, name, files = gd.helper(link)
