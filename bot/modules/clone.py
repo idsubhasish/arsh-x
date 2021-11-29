@@ -23,7 +23,7 @@ def cloneNode(update, context):
         link = ''
     gdtot_link = is_gdtot_link(link)
     if gdtot_link:
-        msg = sendMessage(f"Processing Gdtot Link.....:)
+        msg = sendMessage(f"Processing Gdtot Link.....:")
         try:
             link = gdtot(link)
         except DirectDownloadLinkException as e:
