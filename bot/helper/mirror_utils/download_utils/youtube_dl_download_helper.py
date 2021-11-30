@@ -4,9 +4,11 @@ import time
 import logging
 import re
 import threading
+
 from .download_helper import DownloadHelper
 from yt_dlp import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
+from bot.helper.telegram_helper.message_utils import sendStatusMessage
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 
 LOGGER = logging.getLogger(__name__)
@@ -18,9 +20,9 @@ class MyLogger:
 
     def debug(self, msg):
         # Hack to fix changing extension
-        match = re.search(r'.Merger..Merging formats into..(.*?).$', msg)  # To mkv
+        match = re.search(r'.Merger..Merging formats into..(.*?).$', msg) # To mkv
         if not match and not self.obj.is_playlist:
-            match = re.search(r'.ExtractAudio..Destination..(.*?)$', msg)  # To mp3
+            match = re.search(r'.ExtractAudio..Destination..(.*?)$', msg) # To mp3
         if match and not self.obj.is_playlist:
             newname = match.group(1)
             newname = newname.split("/")[-1]
@@ -109,7 +111,6 @@ class YoutubeDLHelper(DownloadHelper):
 
         if get_info:
             self.opts['playlist_items'] = '0'
-
         with YoutubeDL(self.opts) as ydl:
             try:
                 result = ydl.extract_info(link, download=False)
@@ -133,7 +134,6 @@ class YoutubeDLHelper(DownloadHelper):
                 self.name = str(realName).split(f" [{result['id']}]")[0]
             else:
                 self.name = name
-
         else:
             ext = realName.split('.')[-1]
             if name == "":
@@ -163,8 +163,7 @@ class YoutubeDLHelper(DownloadHelper):
         sendStatusMessage(self.__listener.update, self.__listener.bot)
         self.opts['format'] = qual
         if qual == 'ba/b':
-            self.opts['postprocessors'] = [
-                {'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '340'}]
+          self.opts['postprocessors'] = [{'key': 'FFmpegExtractAudio','preferredcodec': 'mp3','preferredquality': '340'}]
         LOGGER.info(f"Downloading with YT-DL: {link}")
         self.extractMetaData(link, name)
         if self.is_cancelled:
