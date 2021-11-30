@@ -9,7 +9,6 @@ import random
 import string
 import time
 import shutil
-
 from telegram.ext import CommandHandler
 from telegram import InlineKeyboardMarkup, ParseMode
 
@@ -43,7 +42,7 @@ ariaDlManager.start_listener()
 
 
 class MirrorListener(listeners.MirrorListeners):
-    def __init__(self, bot, update, pswd, isZip=False, extract=False, isQbit=False, isLeech=False):
+    def __init__(self, bot, update, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None):
         super().__init__(bot, update)
         self.extract = extract
         self.isZip = isZip
@@ -434,11 +433,11 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
                 sendMessage(str(e), bot, update)
                 return
 
-    listener = MirrorListener(bot, update, pswd, isZip, extract, isQbit, isLeech)
+    listener = MirrorListener(bot, update, isZip, extract, isLeech, pswd)
 
     if bot_utils.is_gdrive_link(link):
         if not isZip and not extract and not isLeech:
-            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder \nUse /{BotCommands.CloneCommand} for Gdtot links \nUse /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
+            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\nUse /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
             return
         res, size, name, files = gdriveTools.GoogleDriveHelper().helper(link)
         if res != "":
