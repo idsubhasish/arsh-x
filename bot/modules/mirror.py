@@ -9,7 +9,6 @@ import random
 import string
 import time
 import shutil
-
 from telegram.ext import CommandHandler
 from telegram import InlineKeyboardMarkup, ParseMode
 
@@ -43,7 +42,7 @@ ariaDlManager.start_listener()
 
 
 class MirrorListener(listeners.MirrorListeners):
-    def __init__(self, bot, update, pswd, isZip=False, extract=False, isQbit=False, isLeech=False):
+    def __init__(self, bot, update, isTar=False, isZip=False, extract=False, isLeech=False, pswd=None):
         super().__init__(bot, update)
         self.extract = extract
         self.isZip = isZip
@@ -434,7 +433,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
                 sendMessage(str(e), bot, update)
                 return
 
-    listener = MirrorListener(bot, update, pswd, isZip, extract, isQbit, isLeech)
+    listener = MirrorListener(bot, update, isTar, isZip, extract, isLeech, pswd)
 
     if bot_utils.is_gdrive_link(link):
         if not isZip and not extract and not isLeech:
