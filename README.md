@@ -1,7 +1,9 @@
 This is a Telegram Bot written in Python for mirroring files on the Internet to your Google Drive or Telegram. Based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot)
+##Fork of Anasty's Repo previously know as Slam Mirror Repo
 
 # Features:
-
+<details>
+    <summary><b>Click Here For More Details</b></summary>
 ## By me
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
@@ -62,13 +64,14 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 **See these examples for custom filename, Extract/Compress password protected files and downlaod from protected links**
 <p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/See%20Telegraph-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
 
+</details>
 # How to deploy?
 Deploying is pretty much straight forward and is divided into several steps as follows:
 ## Installing requirements
 
 - Clone this repo:
 ```
-git clone https://github.com/anasty17/mirror-leech-telegram-bot mirrorbot/ && cd mirrorbot
+if you dont know how to clone than learn it first
 ```
 
 - Install requirements
@@ -144,7 +147,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `DATABASE_URL`: Your Database URL. See [Generate Database](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#generate-database) to generate database (**NOTE**: If you use database you can save your Sudo ID permanently using `/addsudo` command).
 - `AUTHORIZED_CHATS`: Fill user_id and chat_id (not username) of groups/users you want to authorize. Separate them with space, Examples: `-0123456789 -1122334455 6915401739`.
 - `SUDO_USERS`: Fill user_id (not username) of users whom you want to give sudo permission. Separate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want to save Sudo ID permanently without database, you must fill your Sudo Id here).
-- `LOGS_CHATS`: Fill chat_id of channel/group where you want to store logs. Separate them with space, Examples: `-0123456789 -1122334455 6915401739`.
+- `LOGS_CHATS`: Fill chat_id of channel/group where you want to store logs. Separate them with space, Examples: `-0123456789 -1122334455 6915401739`
+<br> ```Note:Add the mirror bot in Log Channel/Group as Admin ```
 - `IS_TEAM_DRIVE`: Set to `True` if `GDRIVE_FOLDER_ID` is from a Team Drive else `False` or Leave it empty. `Bool`
 - `USE_SERVICE_ACCOUNTS`: (Leave empty if unsure) Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below.
 - `INDEX_URL`: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index The URL should not have any trailing '/'
@@ -252,8 +256,9 @@ help - All cmds with description
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
-## Deploying On VPS
-
+##Deploying On VPS
+<details>
+    <summary><b>Click Here For More Details</b></summary>
 **IMPORTANT NOTE**: You must set `SERVER_PORT` variable to `80` or any other port you want to use.
 
 - Start Docker daemon (skip if already running):
@@ -307,6 +312,8 @@ sudo docker image prune -a
 ```
 - Tutorial video from Tortoolkit repo
 <p><a href="https://youtu.be/c8_TU1sPK08"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
+</details>
+
 
 ## Deploying on Heroku
 - Deploying on Heroku with Github Workflow
@@ -316,6 +323,11 @@ sudo docker image prune -a
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/Deploy%20Guide-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
 
 # Using Service Accounts for uploading to avoid user rate limit
+
+<details>
+    <summary><b>Click Here For More Details</b></summary>
+
+
 For Service Account to work, you must set `USE_SERVICE_ACCOUNTS` = "True" in config file or environment variables.
 **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
@@ -376,6 +388,7 @@ Then add emails from emails.txt to Google Group, after that add this Google Grou
 ```
 python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ```
+</details>
 
 # Multi Search IDs
 To use list from multi TD/folder. Run driveid.py in your terminal and follow it. It will generate **drive_folder** file or u can simply create `drive_folder` file in working directory and fill it, check below format:
