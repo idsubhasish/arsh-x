@@ -54,7 +54,7 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
         help_msg += "\n➧ 𝐑𝐞𝐩𝐥𝐲𝐢𝐧𝐠 𝐭𝐨 𝐥𝐢𝐧𝐤: <code>/command</code> |newname pswd: mypassword [ 𝚣𝚒𝚙 ]"
         return sendMessage(help_msg, bot, update)
 
-    listener = MirrorListener(bot, update, isZip, isLeech=isLeech, pswd=pswd)
+    listener = MirrorListener(bot, update, isZip, isLeech=isLeech)
     listener_dict[msg_id] = listener, user_id, link, name
 
     buttons = button_build.ButtonMaker()
