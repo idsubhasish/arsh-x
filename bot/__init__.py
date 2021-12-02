@@ -423,6 +423,26 @@ except KeyError:
     PHPSESSID = None
     CRYPT = None
 try:
+    UPDATES_CHANNEL = getConfig('UPDATES_CHANNEL')
+    if len(UPDATES_CHANNEL) == 0:
+        GD_INFO = None
+except KeyError:
+    UPDATES_CHANNEL = 'heliosmirror'
+
+try:
+    DEVELOPER = getConfig('DEVELOPER')
+    if len(DEVELOPER) == 0:
+        GD_INFO = None
+except KeyError:
+    DEVELOPER = 'NmberSEVEN'
+try:
+    SUPPORT_GROUP = getConfig('SUPPORT_GROUP')
+    if len(SUPPORT_GROUP) == 0:
+        GD_INFO = None
+except KeyError:
+    SUPPORT_GROUP = 'heliosmirror'
+
+try:
     GD_INFO = getConfig('GD_INFO')
     if len(GD_INFO) == 0:
         GD_INFO = None
