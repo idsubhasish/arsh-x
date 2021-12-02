@@ -63,9 +63,30 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 ```
 **See these examples for custom filename, Extract/Compress password protected files and downlaod from protected links**
 <p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/See%20Telegraph-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
-
 </details>
+
 # How to deploy?
+##Simplest and easiest way
+```
+- Fork this repo
+- Download the sample_config.env file
+- Change it's name to config.env
+- Remove the first line saying" _____REMOVE_THIS_LINE_____=True
+- Fill all the config vars
+- Create another private repo on github upload your config file there and get the "RAW URL" of that file
+- Go to your forked repo setting and in secrates fill the values of
+- HEROKU_API_KEY - "Your Heroku API"
+- HEROKU_EMAIL - "Your Heroku Email"
+- HEROKU_APP_NAME - "Your Heroku App name"
+- CONFIG_FILE_URL - "URL of your Config.env file" 
+  You can also upload your config file on gdrive and use index link
+- After that go to Action tab on your forked repo and run action"
+- Your bot will be deployed, you can check logs of actions and heroku in case if you face any issue.
+```
+##More ways to Deploy
+<details>
+    <summary> Click Here For More Details </summary>
+
 Deploying is pretty much straight forward and is divided into several steps as follows:
 ## Installing requirements
 
@@ -93,6 +114,8 @@ sudo pacman -S docker python
 ```
 pip3 install -r requirements-cli.txt
 ```
+</details>
+
 ## Generate Database
 <details>
     <summary><b>Click Here For More Details</b></summary>
@@ -173,9 +196,13 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `AS_DOCUMENT`: Default Telegram file type upload. Empty or `False` means as media. `Bool`
 - `EQUAL_SPLITS`: Split files larger than **TG_SPLIT_SIZE** into equal parts size. `Bool`
 - `CUSTOM_FILENAME`: Add custom word to leeched file name.
+- `PHPSESSID` and `CRYPT`: Cookies for gdtot google drive link generator. Check setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#Gdtot Cookies)
+- `AUTHOR_NAME`: Telegraph Author Name, Default is "Helios Mirror Bot"
+- `AUTHOR_URL`: Telegraph Author URL, Default is "https://t.me/heliosmirror"
+- `TITLE_NAME`: Telegraph Title Name, Default is "Helios Mirror Search"
+- `GD_INFO`: Google Drive File Discription, Default is "Uploaded by Helios Mirror Bot"
 - `SHORTENER_API`: Fill your Shortener API key.
 - `SHORTENER`: Shortener URL.
-- `PHPSESSID` and `CRYPT`: Cookies for gdtot google drive link generator. Check setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#Gdtot Cookies)
 Supported URL Shorteners:
 ```
 exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly,

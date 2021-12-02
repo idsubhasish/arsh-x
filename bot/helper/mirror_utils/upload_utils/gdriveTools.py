@@ -18,6 +18,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from tenacity import *
+from bot import *
 
 from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_build
@@ -165,7 +166,7 @@ class GoogleDriveHelper:
         # File body description
         file_metadata = {
             'name': file_name,
-            'description': 'Helios-Mirror-Bot',
+            'description': f'{GD_INFO}',
             'mimeType': mime_type,
         }
         try:
@@ -774,9 +775,9 @@ class GoogleDriveHelper:
 
         for content in self.telegraph_content :
             self.path.append(Telegraph(access_token=telegraph_token).create_page(
-                                                    title = 'Helios-Mirror Search',
-                                                    author_name='Helios-Mirror',
-                                                    author_url='https://t.me/heliosmirror',
+                                                    title = f'{TITLE_NAME}',
+                                                    author_name=f'{AUTHOR_NAME}',
+                                                    author_url=f'{AUTHOR_URL}',
                                                     html_content=content
                                                     )['path'])
 
