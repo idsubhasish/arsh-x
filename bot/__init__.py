@@ -454,14 +454,14 @@ try:
     if len(TITLE_NAME) == 0:
         TITLE_NAME = None
 except KeyError:
-    TITLE_NAME = 'Helios Mirror Bot'
+    TITLE_NAME = 'Helios-Mirror-Search'
 
 try:
     AUTHOR_NAME = getConfig('AUTHOR_NAME')
     if len(AUTHOR_NAME) == 0:
         AUTHOR_NAME = None
 except KeyError:
-    AUTHOR_NAME = 'Helios Mirror Bot'
+    AUTHOR_NAME = 'Helios-Mirror-Bot'
 
 try:
     AUTHOR_URL = getConfig('AUTHOR_URL')
