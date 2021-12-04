@@ -471,11 +471,6 @@ except KeyError:
     AUTHOR_URL = ''
 
 try:
-    RECURSIVE_SEARCH = getConfig('RECURSIVE_SEARCH')
-    RECURSIVE_SEARCH = RECURSIVE_SEARCH.lower() == 'true'
-except KeyError:
-    RECURSIVE_SEARCH = False
-try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
         TOKEN_PICKLE_URL = None
