@@ -434,14 +434,14 @@ try:
     if len(TITLE_NAME) == 0:
         TITLE_NAME = None
 except KeyError:
-    TITLE_NAME = 'Helios Mirror Search'
+    TITLE_NAME = 'Helios-Mirror-Search'
 
 try:
     AUTHOR_NAME = getConfig('AUTHOR_NAME')
     if len(AUTHOR_NAME) == 0:
         AUTHOR_NAME = None
 except KeyError:
-    AUTHOR_NAME = 'Helios Mirror Bot'
+    AUTHOR_NAME = 'Helios-Mirror-Bot'
 
 try:
     AUTHOR_URL = getConfig('AUTHOR_URL')
@@ -449,11 +449,7 @@ try:
         AUTHOR_URL = None
 except KeyError:
     AUTHOR_URL = 'https://t.me/heliosmirror'
-try:
-    RECURSIVE_SEARCH = getConfig('RECURSIVE_SEARCH')
-    RECURSIVE_SEARCH = RECURSIVE_SEARCH.lower() == 'true'
-except KeyError:
-    RECURSIVE_SEARCH = False
+
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
