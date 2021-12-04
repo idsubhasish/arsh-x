@@ -583,7 +583,7 @@ class GoogleDriveHelper:
         rtnlist.reverse()
         return rtnlist
 
-    def drive_query(self, parent_id, fileName, stopDup, is , itemType):
+    def drive_query(self, parent_id, fileName, stopDup, isRecursive , itemType):
         try:
             if isRecursive:
                 if stopDup:
