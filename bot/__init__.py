@@ -17,8 +17,6 @@ from telegraph import Telegraph
 
 import psycopg2
 from psycopg2 import Error
-from pyrogram import Client
-from forcesubConfig import Config
 import socket
 import faulthandler
 faulthandler.enable()
@@ -126,32 +124,6 @@ def get_client() -> qba.TorrentsAPIMixIn:
     except qba.LoginFailed as e:
         logging.error(str(e))
         return None
-
-def fsubbot():
-    try:
-        logging.basicConfig(level=logging.INFO)
-
-        plugins = dict(
-            root="plugins",
-            include=[
-                "forceSubscribe",
-                "help"
-            ]
-        )
-
-        app = Client(
-            'ForceSubscribeRobot',
-            bot_token=Config.BOT_TOKEN,
-            api_id=Config.APP_ID,
-            api_hash=Config.API_HASH,
-            plugins=plugins
-        )
-
-        app.run()
-    except Exception as e:
-        logging.error(f"Can`t start Fsub Bot{e}")
-        pass
-    threading.Thread(target=fsubbot).start()
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
