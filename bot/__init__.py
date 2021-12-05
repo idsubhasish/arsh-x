@@ -80,6 +80,7 @@ alive = subprocess.Popen(["python3", "alive.py"])
 subprocess.run(["mkdir", "-p", "qBittorrent/config"])
 subprocess.run(["cp", "qBittorrent.conf", "qBittorrent/config/qBittorrent.conf"])
 nox = subprocess.Popen(["qbittorrent-nox", "--profile=."])
+subprocess.run(["python3","forcesubbot.py"])
 time.sleep(1)
 Interval = []
 DRIVES_NAMES = []
