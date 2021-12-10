@@ -2,7 +2,7 @@ import os
 
 class Config():
   #Get it from @botfather
-  BOT_TOKEN = os.environ.get("BOT_TOKEN", "1942974533:AAHQzLKDefjuUy0hx1Qn-0Fumq59xbjUTVs")
+  BOT_TOKEN = os.environ.get("BOT_TOKEN", "1974106970:AAETAmxVApqOQG5RlR8sTaPwrNLjYOr5LRg")
   # Your bot updates channel username without @ or leave empty
   UPDATES_CHANNEL = os.environ.get("UPDATES_CHANNEL", "heliosmirror")
   DEVELOPER = os.environ.get("DEVELOPER", "NmberSEVEN")
