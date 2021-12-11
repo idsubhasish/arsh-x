@@ -10,7 +10,7 @@ class Config():
 
 
   # Heroku postgres DB URL
-  DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://sohuwcmr:S9ESAIT83jGO0B3xs-BJ25f8eZtIYqWq@fanny.db.elephantsql.com/sohuwcmr")
+  DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://htzaomzkensyud:2404b089b74237857d94459c94e8099fdd6efbd79280218c6eedabb390162f85@ec2-34-233-214-228.compute-1.amazonaws.com:5432/dbrnp207p2c5ug")
   # get it from my.telegram.org
   APP_ID = os.environ.get("APP_ID", 4367197)
   API_HASH = os.environ.get("API_HASH", "420a3ab8c95edbb55a527ab650f35101")
