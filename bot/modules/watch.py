@@ -64,7 +64,7 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
     except Exception as e:
         return sendMessage(str(e), bot, update)
     if 'entries' in result:
-        for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
+        for i in ['480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}]+ba/b"
             buttons.sbutton(str(i), f"qu {msg_id} {video_format} t")
         buttons.sbutton("Audios", f"qu {msg_id} audio t")
