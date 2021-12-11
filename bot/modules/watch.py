@@ -54,7 +54,7 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
         help_msg += "\n<code>/command</code> |newname pswd: mypassword [𝚣𝚒𝚙]"
         return sendMessage(help_msg, bot, update)
 
-    listener = MirrorListener(bot, update, isZip, isLeech=isLeech, pswd=pswd)
+    listener = MirrorListener(bot, update, isZip, isLeech=isLeech)
     buttons = button_build.ButtonMaker()
     best_video = "bv*+ba/b"
     best_audio = "ba/b"
