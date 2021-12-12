@@ -148,9 +148,9 @@ def leechWatchZip(update, context):
 
 
 watch_handler = CommandHandler(BotCommands.WatchCommand, watch,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                               filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
 zip_watch_handler = CommandHandler(BotCommands.ZipWatchCommand, watchZip,
-                                   filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+                                   filters=CustomFilters.owner_filter | CustomFilters.authorized_user,
                                    run_async=True)
 leech_watch_handler = CommandHandler(BotCommands.LeechWatchCommand, leechWatch,
                                      filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
