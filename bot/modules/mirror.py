@@ -222,7 +222,7 @@ class MirrorListener(listeners.MirrorListeners):
                 msg += f'<b>Total Files: </b>{count}\n'
                 if typ != 0:
                     msg += f'<b>Corrupted Files: </b>{typ}\n'
-                msg += f'<b>cc: </b>{uname}\n\n'
+                msg += f'<b>Leeched By: </b>{uname}\n\n'
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
