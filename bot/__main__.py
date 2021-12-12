@@ -17,7 +17,7 @@ from bot.helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
-from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, usage
 
 
 def stats(update, context):
@@ -156,7 +156,9 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.LogCommand}</b>: Get a log file of the bot. Handy for getting crash reports
 <br><br>
-<b>/{BotCommands.SpeedCommand}</b>: Check Internet Speed of the Host
+<b>/{BotCommands.SpeedCommand}</b>: Check Internet Speed of the Host (Only Owner)
+<br><br>
+<b>/{BotCommands.UsageCommand}</b>: Show Heroku Dyno Usage (Only Owner)
 <br><br>
 <b>/{BotCommands.ShellCommand}</b>: Run commands in Shell (Only Owner)
 <br><br>
@@ -176,10 +178,6 @@ help_string = f'''
 
 /{BotCommands.QbMirrorCommand} [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
 
-/{BotCommands.LeechCommand} [download_url][magnet_link]: Start leeching to Telegram, Use /{BotCommands.LeechCommand} s to select files before leeching
-
-/{BotCommands.UnzipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and if downloaded file is any archive, extracts it to Telegram
-
 /{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
 
 /{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
@@ -195,6 +193,8 @@ help_string = f'''
 /{BotCommands.ListCommand} [query]: Search in Google Drive
 
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
+
+/{BotCommands.UsageCommand}: Show Heroku Dyno Usage
 
 '''
 

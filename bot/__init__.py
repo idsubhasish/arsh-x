@@ -438,6 +438,23 @@ try:
         AUTHOR_URL = 'https://t.me/heliosmirror'
 except KeyError:
     AUTHOR_URL = 'https://t.me/heliosmirror'
+    
+try:
+    HEROKU_APP_NAME = getConfig('HEROKU_APP_NAME')
+    if len(HEROKU_APP_NAME) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('HEROKU_APP_NAME not provided!')
+    HEROKU_APP_NAME = None
+    
+try:
+    HEROKU_API_KEY = getConfig('HEROKU_API_KEY')
+    if len(HEROKU_API_KEY) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('HEROKU_API_KEY not provided!')
+    HEROKU_API_KEY = None
+
 
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
