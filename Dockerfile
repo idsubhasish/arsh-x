@@ -1,4 +1,4 @@
-FROM prajwals3/mirror-bomt:ubuntu
+FROM arshsisodiya/heliospublic:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app

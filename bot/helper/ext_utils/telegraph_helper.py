@@ -33,9 +33,9 @@ class TelegraphHelper:
 	def create_page(self, title, content):
 		try:
 			return self.telegraph.create_page(
-				title = f'{TITLE_NAME}',
-				author_name=f'{AUTHOR_NAME}',
-				author_url=f'{AUTHOR_URL}',
+				title = title,
+				author_name=self.author_name,
+				author_url=self.author_url,
 				html_content=content
 			)
 		except RetryAfterError as st:
@@ -47,15 +47,14 @@ class TelegraphHelper:
 		try:
 			return self.telegraph.edit_page(
 				path = path,
-				title=f'{TITLE_NAME}',
-				author_name=f'{AUTHOR_NAME}',
-				author_url=f'{AUTHOR_URL}',
+				title = title,
+				author_name=self.author_name,
+				author_url=self.author_url,
 				html_content=content
 			)
 		except RetryAfterError as st:
 			LOGGER.warning(f'Telegraph Flood control exceeded. I will sleep for {st.retry_after} seconds.')
 			time.sleep(st.retry_after)
 			return self.edit_page(path, title, content)
-
 
 telegraph=TelegraphHelper(f'{AUTHOR_NAME}', f'{AUTHOR_URL}')

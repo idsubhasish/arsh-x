@@ -11,3 +11,4 @@ accounts/*
 Thumbnails/*
 drive_folder
 cookies.txt
+config.env
