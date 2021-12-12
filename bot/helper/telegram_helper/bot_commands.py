@@ -50,5 +50,6 @@ class _BotCommands:
         self.QbZipLeechCommand = getCommand('QBZIPLEECH_BOT', 'qbzipleech')
         self.LeechWatchCommand = getCommand('LEECHWATCH_BOT', 'leechwatch')
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_BOT', 'leechzipwatch')
+        self.UsageCommand = getCommand('USAGE_BOT', 'usage')
 
 BotCommands = _BotCommands()

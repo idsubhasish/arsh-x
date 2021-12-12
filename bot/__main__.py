@@ -8,16 +8,16 @@ from sys import executable
 
 from telegram import ParseMode
 from telegram.ext import CommandHandler
-from telegraph import Telegraph
 from wserver import start_server_async
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, IS_VPS, PORT, alive, web, nox, OWNER_ID, AUTHORIZED_CHATS, telegraph_token
+from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, IS_VPS, PORT, alive, web, nox, OWNER_ID, AUTHORIZED_CHATS
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper.bot_commands import BotCommands
+from .helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
-from .modules import authorize, cancel_mirror, mirror_status, mirror, watch, speedtest, count, leech_settings
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, usage
 
 
 def stats(update, context):
@@ -86,6 +86,18 @@ def log(update, context):
 help_string_telegraph = f'''<br>
 <b>/{BotCommands.HelpCommand}</b>: To get this message
 <br><br>
+<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Start mirroring the link to Google Drive.
+<br><br>
+<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
+<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Start Mirroring using qBittorrent, Use <b>/{BotCommands.QbMirrorCommand} s</b> to select files before downloading
+<br><br>
+<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
 <b>/{BotCommands.LeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram, Use <b>/{BotCommands.LeechCommand} s</b> to select files before leeching
 <br><br>
 <b>/{BotCommands.ZipLeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram and upload it as (.zip)
@@ -97,6 +109,16 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.QbZipLeechCommand}</b> [magnet_link]: Start leeching to Telegram using qBittorrent and upload it as (.zip)
 <br><br>
 <b>/{BotCommands.QbUnzipLeechCommand}</b> [magnet_link]: Start leeching to Telegram using qBittorrent and if downloaded file is any archive, extracts it to Telegram
+<br><br>
+<b>/{BotCommands.CloneCommand}</b> [drive_url]: Copy file/folder to Google Drive
+<br><br>
+<b>/{BotCommands.CountCommand}</b> [drive_url]: Count file/folder of Google Drive Links
+<br><br>
+<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.WatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl. Click <b>/{BotCommands.WatchCommand}</b> for more help
+<br><br>
+<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
 <br><br>
 <b>/{BotCommands.LeechWatchCommand}</b> [youtube-dl supported link]: Leech through youtube-dl 
 <br><br>
@@ -110,51 +132,70 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.CancelAllCommand}</b>: Cancel all running tasks
 <br><br>
+<b>/{BotCommands.ListCommand}</b> [query]: Search in Google Drive
+<br><br>
+<b>/{BotCommands.SearchCommand}</b> [query]: Search for torrents with installed qbittorrent search plugins
+<br><br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
 <br><br>
 <b>/{BotCommands.PingCommand}</b>: Check how long it takes to Ping the Bot
+<br><br>
+<b>/{BotCommands.AuthorizeCommand}</b>: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.UnAuthorizeCommand}</b>: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.AuthorizedUsersCommand}</b>: Show authorized users (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.AddSudoCommand}</b>: Add sudo user (Only Owner)
+<br><br>
+<b>/{BotCommands.RmSudoCommand}</b>: Remove sudo users (Only Owner)
+<br><br>
+<b>/{BotCommands.RestartCommand}</b>: Restart the bot
+<br><br>
+<b>/{BotCommands.LogCommand}</b>: Get a log file of the bot. Handy for getting crash reports
+<br><br>
+<b>/{BotCommands.SpeedCommand}</b>: Check Internet Speed of the Host (Only Owner)
+<br><br>
+<b>/{BotCommands.UsageCommand}</b>: Show Heroku Dyno Usage (Only Owner)
+<br><br>
+<b>/{BotCommands.ShellCommand}</b>: Run commands in Shell (Only Owner)
+<br><br>
+<b>/{BotCommands.ExecHelpCommand}</b>: Get help for Executor module (Only Owner)
 '''
-help = Telegraph(access_token=telegraph_token).create_page(
-        title='Helios Mirrorbot Help',
-        author_name='Helios Mirrorbot',
-        author_url='https://github.com/arshsisodiya/helios-mirror-public',
-        html_content=help_string_telegraph,
+help = telegraph.create_page(
+        title='Helios Mirror Help',
+        content=help_string_telegraph,
     )["path"]
 
 help_string = f'''
-/{BotCommands.HelpCommand}: To get this message
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive.
 
-/{BotCommands.LeechCommand} [download_url][magnet_link]: Start leeching to Telegram, Use /{BotCommands.LeechCommand} s to select files before leeching
+/{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
 
-/{BotCommands.ZipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and upload it as (.zip)
+/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Start mirroring and if downloaded file is any archive, extracts it to Google Drive
 
-/{BotCommands.UnzipLeechCommand} [download_url][magnet_link]: Start leeching to Telegram and if downloaded file is any archive, extracts it to Telegram
+/{BotCommands.QbMirrorCommand} [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
 
-/{BotCommands.QbLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent, Use /{BotCommands.QbLeechCommand} s to select files before leeching
+/{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
 
-/{BotCommands.QbZipLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent and upload it as (.zip)
+/{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
 
-/{BotCommands.QbUnzipLeechCommand} [magnet_link]: Start leeching to Telegram using qBittorrent and if downloaded file is any archive, extracts it to Telegram
+/{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+
+/{BotCommands.ZipWatchCommand} [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
 
 /{BotCommands.LeechWatchCommand} [youtube-dl supported link]: Leech through youtube-dl 
 
-/{BotCommands.LeechZipWatchCommand} [youtube-dl supported link]: Leech through youtube-dl and zip before uploading 
-
-/{BotCommands.LeechSetCommand}: Leech Settings 
-
-/{BotCommands.SetThumbCommand}: Reply photo to set it as Thumbnail
-
 /{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
 
-/{BotCommands.CancelAllCommand}: Cancel all running tasks
+/{BotCommands.ListCommand} [query]: Search in Google Drive
 
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
 
-/{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
+/{BotCommands.UsageCommand}: Show Heroku Dyno Usage
 
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 '''
 
 def bot_help(update, context):
