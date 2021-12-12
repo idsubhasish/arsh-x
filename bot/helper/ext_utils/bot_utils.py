@@ -103,8 +103,8 @@ def get_progress_bar_string(status):
     p = 0 if total == 0 else round(completed * 100 / total)
     p = min(max(p, 0), 100)
     cFull = p // 9
-    p_str = '■' * cFull
-    p_str += '□' * (11 - cFull)
+    p_str = '█' * cFull #https://changaco.oy.lc/unicode-progress-bars
+    p_str += '░' * (11 - cFull)
     p_str = f"[{p_str}]"
     return p_str
 
