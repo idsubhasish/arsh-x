@@ -1,5 +1,5 @@
 This is a Telegram Bot written in Python for mirroring files on the Internet to your Google Drive or Telegram. Based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot)
-##Fork of Anasty's Repo previously know as Slam Mirror Repo
+### Fork of Anasty's Repo previously know as Slam Mirror Repo
 
 # Features:
 <details>
@@ -66,7 +66,7 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 </details>
 
 # How to deploy?
-##Simplest and easiest way
+## Simplest and easiest way
 ```
 - Fork this repo
 - Download the sample_config.env file
@@ -83,7 +83,7 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 - After that go to Action tab on your forked repo and run action"
 - Your bot will be deployed, you can check logs of actions and heroku in case if you face any issue.
 ```
-##More ways to Deploy
+## More ways to Deploy
 <details>
     <summary> Click Here For More Details </summary>
 
@@ -158,9 +158,9 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 ### Optional Field
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link. Archive the accounts folder to a zip file. Fill this with the direct link of that file.
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
-- `MULTI_SEARCH_URL`: run driveid.py [here](https://github.com/arshsisodiya/helios-mirror-private/blob/helios-mirror/driveid.py). Upload **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable.
 - `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only.
 - `NETRC_URL`: Use this incase you want to deploy heroku branch from without filling `UPSTREAM_REPO` variable, since after restart this file will cloned from github as empty file. Use gist raw link and remove commit id from the link, so you can edit it from gists only.
+- `MULTI_SEARCH_URL`: run driveid.py [here](https://github.com/arshsisodiya/helios-mirror-private/blob/helios-mirror/driveid.py). Upload **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable.
 **Note remove commit id from the link**
 
 **Example:** <br> <br>
@@ -218,21 +218,7 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 - `BUTTON_FIVE_URL`:
 - `BUTTON_SIX_NAME`:
 - `BUTTON_SIX_URL`:
-
-#Setup Force Subscriber Bot
-- Fill required configs in [forcesubConfig.py](https://github.com/arshsisodiya/helios-mirror-private/blob/helios-mirror/forcesubConfig.py)
-- after deploying the bot
-- Add the bot in group with ban user permission
-- Add the bot in Channel as Admin
-##Force Subscriber bot Command
-```
-forcesubscribe - To get current settings
-forcesubscribe no/off/disable - To turn off ForceSubscribe
-forcesubscribe {channel username or channel id} - To turn on force subscribe and setup the channel
-forcesubscribe clear - To unmute all members who muted by Force Subscriber bot
-
-Note - Fsub is alias of forcesubscriber
-```
+- 
 ## Bot commands to be set in [@BotFather](https://t.me/BotFather)
 
 ```
@@ -283,7 +269,7 @@ help - All cmds with description
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
-##Deploying On VPS
+## Deploying On VPS
 <details>
     <summary><b>Click Here For More Details</b></summary>
 **IMPORTANT NOTE**: You must set `SERVER_PORT` variable to `80` or any other port you want to use.

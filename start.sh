@@ -1,1 +1,2 @@
-./aria.sh; python3 -m bot & python3 forcesubbot.py
+./aria.sh; python3 -m bot & python3 fsub/bot.py
+
