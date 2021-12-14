@@ -2,32 +2,25 @@ import logging
 import os
 import threading
 import time
-import random
-import string
 import subprocess
 import requests
-import json
-
-import aria2p
-import qbittorrentapi as qba
-import telegram.ext as tg
-from dotenv import load_dotenv
-from pyrogram import Client
-from telegraph import Telegraph
-
-import psycopg2
-from psycopg2 import Error
-
 import socket
 import faulthandler
+import aria2p
+import psycopg2
+import json
+import qbittorrentapi as qba
+import telegram.ext as tg
+
+from pyrogram import Client
+from psycopg2 import Error
+from dotenv import load_dotenv
+
 faulthandler.enable()
 
 socket.setdefaulttimeout(600)
 
 botStartTime = time.time()
-if os.path.exists('log.txt'):
-    with open('log.txt', 'r+') as f:
-        f.truncate(0)
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
@@ -35,17 +28,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 LOGGER = logging.getLogger(__name__)
 
-CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
-if CONFIG_FILE_URL is not None:
-    res = requests.get(CONFIG_FILE_URL)
-    if res.status_code == 200:
-        with open('config.env', 'wb+') as f:
-            f.write(res.content)
-            f.close()
-    else:
-        logging.error(f"Failed to download config.env {res.status_code}")
-
 load_dotenv('config.env', override=True)
+
 def getConfig(name: str):
     return os.environ[name]
 
@@ -61,7 +45,7 @@ try:
                 f.close()
         else:
             logging.error(f"Failed to download .netrc {res.status_code}")
-    except RequestException as e:
+    except Exception as e:
         logging.error(str(e))
 except KeyError:
     pass
@@ -72,21 +56,22 @@ try:
 except KeyError:
     SERVER_PORT = 80
 
-SERVER_PORT = os.environ.get('SERVER_PORT', None)
 PORT = os.environ.get('PORT', SERVER_PORT)
 web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
 alive = subprocess.Popen(["python3", "alive.py"])
-subprocess.run(["mkdir", "-p", "qBittorrent/config"])
-subprocess.run(["cp", "qBittorrent.conf", "qBittorrent/config/qBittorrent.conf"])
 nox = subprocess.Popen(["qbittorrent-nox", "--profile=."])
-time.sleep(1)
+if not os.path.exists('.netrc'):
+    subprocess.run(["touch", ".netrc"])
+subprocess.run(["cp", ".netrc", "/root/.netrc"])
+subprocess.run(["chmod", "600", ".netrc"])
+subprocess.run(["chmod", "+x", "aria.sh"])
+subprocess.run(["./aria.sh"], shell=True)
+time.sleep(0.5)
+
 Interval = []
 DRIVES_NAMES = []
 DRIVES_IDS = []
 INDEX_URLS = []
-
-def getConfig(name: str):
-    return os.environ[name]
 
 def mktable():
     try:
@@ -115,15 +100,8 @@ aria2 = aria2p.API(
     )
 )
 
-
 def get_client() -> qba.TorrentsAPIMixIn:
-    qb_client = qba.Client(host="localhost", port=8090, username="admin", password="adminadmin")
-    try:
-        qb_client.auth_log_in()
-        return qb_client
-    except qba.LoginFailed as e:
-        logging.error(str(e))
-        return None
+    return qba.Client(host="localhost", port=8090)
 
 def aria2c_init():
     try:
@@ -138,6 +116,7 @@ def aria2c_init():
             aria2.remove([download], force=True, files=True)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
+        pass
 
 if not os.path.isfile(".restartmsg"):
     threading.Thread(target=aria2c_init).start()
@@ -247,13 +226,6 @@ if DB_URI is not None:
 
 LOGGER.info("Generating USER_SESSION_STRING")
 app = Client('pyrogram', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN, workers=343)
-
-# Generate Telegraph Token
-sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
-LOGGER.info("Generating TELEGRAPH_TOKEN using '" + sname + "' name")
-telegraph = Telegraph()
-telegraph.create_account(short_name=sname)
-telegraph_token = telegraph.get_access_token()
 
 try:
     TG_SPLIT_SIZE = getConfig('TG_SPLIT_SIZE')
