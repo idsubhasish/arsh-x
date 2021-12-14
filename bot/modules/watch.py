@@ -49,10 +49,8 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
         link = reply_to.text.strip()
 
     if not is_url(link):
-        help_msg = "<b>Send link along with command line:</b>"
-        help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [𝚣𝚒𝚙]"
-        help_msg += "\n\n<b>By replying to link:</b>"
-        help_msg += "\n<code>/command</code> |newname pswd: mypassword [𝚣𝚒𝚙]"
+        help_msg = "<b>Send link along with command line </b>"
+        help_msg += "\n<b>or replying to link</b>"
         return sendMessage(help_msg, bot, update)
 
     listener = MirrorListener(bot, update, isZip, isLeech=isLeech, pswd=pswd)
@@ -65,7 +63,7 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
     except Exception as e:
         return sendMessage(str(e), bot, update)
     if 'entries' in result:
-        for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
+        for i in ['480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}][ext=mp4]+ba/b"
             buttons.sbutton(f"{i}-mp4", f"qu {msg_id} {video_format} t")
             video_format = f"bv*[height<={i}][ext=webm]+ba/b"

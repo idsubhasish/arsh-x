@@ -452,14 +452,9 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
 
 # TODO Rename this here and in `_mirror`
 def _extracted_from__mirror_71(bot, update):
-    help_msg = "<b>Send link along with command line:</b>"
-    help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙]"
-    help_msg += "\n\n<b>By replying to link or file:</b>"
-    help_msg += "\n<code>/command</code> |newname pswd: mypassword [𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙]"
-    help_msg += "\n\n<b>Direct link authorization:</b>"
-    help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword\nusername\npassword"
-    help_msg += "\n\n<b>Qbittorrent selection:</b>"
-    help_msg += "\n<code>/qbcommand</code> <b>s</b> {link} or by replying to {file}"
+    help_msg = "<b>Send link or torrent along with command line or reply to link or file </b>"
+    help_msg += "\n\n<b>for password protected index link authorization:</b>"
+    help_msg += "\n<code>/command</code> {link} \nusername\npassword"
     return sendMessage(help_msg, bot, update)
 
 
