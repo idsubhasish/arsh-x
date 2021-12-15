@@ -229,7 +229,7 @@ class MirrorListener(listeners.MirrorListeners):
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                msg += f'\n<b>Uploaded By: </b>{uname}\n\n'
+                msg += f'\n<b>Leeched By: </b>{uname}\n\n'
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
@@ -285,7 +285,7 @@ class MirrorListener(listeners.MirrorListeners):
             else:
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
-                msg += f'\n\n<b>Leeched By: </b>{uname}'
+                msg += f'\n\n<b>Uploaded By: </b>{uname}'
                 if LOGS_CHATS:
                     try:
                         for i in LOGS_CHATS:
