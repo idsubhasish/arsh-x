@@ -162,21 +162,29 @@ class MirrorListener(listeners.MirrorListeners):
                         fs_utils.split(f_path, f_size, filee, dirpath, TG_SPLIT_SIZE)
                         os.remove(f_path)
         if self.isLeech:
-            LOGGER.info(f"Leech Name: {up_name}")
-            tg = pyrogramEngine.TgUploader(up_name, self)
-            tg_upload_status = TgUploadStatus(tg, size, gid, self)
-            with download_dict_lock:
-                download_dict[self.uid] = tg_upload_status
-            update_all_messages()
-            tg.upload()
+            self._extracted_from_onDownloadComplete_101(up_name, size, gid)
         else:
-            LOGGER.info(f"Upload Name: {up_name}")
-            drive = gdriveTools.GoogleDriveHelper(up_name, self)
-            upload_status = UploadStatus(drive, size, gid, self)
-            with download_dict_lock:
-                download_dict[self.uid] = upload_status
-            update_all_messages()
-            drive.upload(up_name)
+            self._extracted_from_onDownloadComplete_109(up_name, size, gid)
+
+    # TODO Rename this here and in `onDownloadComplete`
+    def _extracted_from_onDownloadComplete_109(self, up_name, size, gid):
+        LOGGER.info(f"Upload Name: {up_name}")
+        drive = gdriveTools.GoogleDriveHelper(up_name, self)
+        upload_status = UploadStatus(drive, size, gid, self)
+        with download_dict_lock:
+            download_dict[self.uid] = upload_status
+        update_all_messages()
+        drive.upload(up_name)
+
+    # TODO Rename this here and in `onDownloadComplete`
+    def _extracted_from_onDownloadComplete_101(self, up_name, size, gid):
+        LOGGER.info(f"Leech Name: {up_name}")
+        tg = pyrogramEngine.TgUploader(up_name, self)
+        tg_upload_status = TgUploadStatus(tg, size, gid, self)
+        with download_dict_lock:
+            download_dict[self.uid] = tg_upload_status
+        update_all_messages()
+        tg.upload()
 
     def onDownloadError(self, error):
         error = error.replace('<', ' ')
@@ -221,7 +229,7 @@ class MirrorListener(listeners.MirrorListeners):
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                msg += f'\n<b>cc: </b>{uname}\n\n'
+                msg += f'\n<b>Uploaded By: </b>{uname}\n\n'
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
@@ -234,22 +242,14 @@ class MirrorListener(listeners.MirrorListeners):
                 if fmsg != '':
                     time.sleep(1.5)
                     sendMessage(msg + fmsg, self.bot, self.update)
-            if self.isQbit and QB_SEED:
-                return
-            else:
+            if not self.isQbit or not QB_SEED:
                 with download_dict_lock:
-                    try:
-                        fs_utils.clean_download(download_dict[self.uid].path())
-                    except FileNotFoundError:
-                        pass
-                    del download_dict[self.uid]
-                    count = len(download_dict)
+                    count = self._extracted_from_onUploadComplete_33()
                 if count == 0:
                     self.clean()
                 else:
                     update_all_messages()
-                return
-
+            return
         with download_dict_lock:
             msg = f'<b>Name: </b><code>{download_dict[self.uid].name()}</code>\n\n<b>Size: </b>{size}'
             msg += f'\n\n<b>Type: </b>{typ}'
@@ -285,7 +285,7 @@ class MirrorListener(listeners.MirrorListeners):
             else:
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
-                msg += f'\n\n<b>cc: </b>{uname}'
+                msg += f'\n\n<b>Leeched By: </b>{uname}'
                 if LOGS_CHATS:
                     try:
                         for i in LOGS_CHATS:
@@ -301,18 +301,21 @@ class MirrorListener(listeners.MirrorListeners):
         sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
         if self.isQbit and QB_SEED:
             return
+        with download_dict_lock:
+            count = self._extracted_from_onUploadComplete_33()
+        if count == 0:
+            self.clean()
         else:
-            with download_dict_lock:
-                try:
-                    fs_utils.clean_download(download_dict[self.uid].path())
-                except FileNotFoundError:
-                    pass
-                del download_dict[self.uid]
-                count = len(download_dict)
-            if count == 0:
-                self.clean()
-            else:
-                update_all_messages()
+            update_all_messages()
+
+    # TODO Rename this here and in `onUploadComplete`
+    def _extracted_from_onUploadComplete_33(self):
+        try:
+            fs_utils.clean_download(download_dict[self.uid].path())
+        except FileNotFoundError:
+            pass
+        del download_dict[self.uid]
+        return len(download_dict)
 
     def onUploadError(self, error):
         e_str = error.replace('<', '').replace('>', '')
