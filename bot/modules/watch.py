@@ -16,7 +16,6 @@ from .mirror import MirrorListener
 
 listener_dict = {}
 
-
 def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
     mssg = update.message.text
     message_args = mssg.split(' ', maxsplit=2)
@@ -49,8 +48,8 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
         link = reply_to.text.strip()
 
     if not is_url(link):
-        help_msg = "<b>Send link along with command line </b>"
-        help_msg += "\n<b>or replying to link</b>"
+        help_msg = "<b>Send link along with command line:</b>"
+        help_msg += "\n<b>or Reply to link:</b>"
         return sendMessage(help_msg, bot, update)
 
     listener = MirrorListener(bot, update, isZip, isLeech=isLeech, pswd=pswd)
@@ -63,7 +62,7 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
     except Exception as e:
         return sendMessage(str(e), bot, update)
     if 'entries' in result:
-        for i in ['480', '720', '1080', '1440', '2160']:
+        for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}][ext=mp4]+ba/b"
             buttons.sbutton(f"{i}-mp4", f"qu {msg_id} {video_format} t")
             video_format = f"bv*[height<={i}][ext=webm]+ba/b"
@@ -99,7 +98,8 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
                 if quality in formats_dict:
                     formats_dict[quality][frmt['tbr']] = size
                 else:
-                    subformat = {frmt['tbr']: size}
+                    subformat = {}
+                    subformat[frmt['tbr']] = size
                     formats_dict[quality] = subformat
 
             for forDict in formats_dict:
@@ -125,7 +125,6 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
         listener_dict[msg_id] = [listener, user_id, link, name, YTBUTTONS, formats_dict]
         sendMarkup('Choose Video Quality:', bot, update, YTBUTTONS)
 
-
 def qual_subbuttons(task_id, qual, msg):
     buttons = button_build.ButtonMaker()
     task_info = listener_dict[task_id]
@@ -134,10 +133,16 @@ def qual_subbuttons(task_id, qual, msg):
     height = qual_fps_ext[0]
     fps = qual_fps_ext[1]
     ext = qual_fps_ext[2]
-    tbrs = [tbr for tbr in formats_dict[qual]]
+    tbrs = []
+    for tbr in formats_dict[qual]:
+        tbrs.append(tbr)
     tbrs.sort(reverse=True)
     for index, br in enumerate(tbrs):
-        tbr = f">{br}" if index == 0 else f'<{tbrs[index - 1]}'
+        if index == 0:
+            tbr = f">{br}"
+        else:
+            sbr = index - 1
+            tbr = f"<{tbrs[sbr]}"
         if fps != '':
             video_format = f"bv*[height={height}][fps={fps}][ext={ext}][tbr{tbr}]+ba/b"
         else:
@@ -149,7 +154,6 @@ def qual_subbuttons(task_id, qual, msg):
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
     SUBBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
     editMessage(f"Choose Video Bitrate for <b>{qual}</b>:", msg, SUBBUTTONS)
-
 
 def audio_subbuttons(task_id, msg, playlist=False):
     buttons = button_build.ButtonMaker()
@@ -166,7 +170,6 @@ def audio_subbuttons(task_id, msg, playlist=False):
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
     SUBBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
     editMessage(f"Choose Audio{i} Bitrate:", msg, SUBBUTTONS)
-
 
 def select_format(update, context):
     query = update.callback_query
@@ -188,52 +191,46 @@ def select_format(update, context):
         return editMessage('Choose Video Quality:', msg, task_info[4])
     elif data[2] == "audio":
         query.answer()
-        playlist = len(data) == 4
+        if len(data) == 4:
+            playlist = True
+        else:
+            playlist = False
         return audio_subbuttons(task_id, msg, playlist)
     elif data[2] != "cancel":
-        _extracted_from_select_format_27(query, task_info, data, task_id)
+        query.answer()
+        listener = task_info[0]
+        link = task_info[2]
+        name = task_info[3]
+        qual = data[2]
+        if len(data) == 4:
+            playlist = True
+        else:
+            playlist = False
+        ydl = YoutubeDLHelper(listener)
+        threading.Thread(target=ydl.add_download,args=(link, f'{DOWNLOAD_DIR}{task_id}', name, qual, playlist)).start()
     del listener_dict[task_id]
     query.message.delete()
-
-# TODO Rename this here and in `select_format`
-def _extracted_from_select_format_27(query, task_info, data, task_id):
-    query.answer()
-    listener = task_info[0]
-    link = task_info[2]
-    name = task_info[3]
-    qual = data[2]
-    playlist = len(data) == 4
-    ydl = YoutubeDLHelper(listener)
-    threading.Thread(target=ydl.add_download, args=(link, f'{DOWNLOAD_DIR}{task_id}', name, qual, playlist)).start()
-
 
 def watch(update, context):
     _watch(context.bot, update)
 
-
 def watchZip(update, context):
     _watch(context.bot, update, True)
-
 
 def leechWatch(update, context):
     _watch(context.bot, update, isLeech=True)
 
-
 def leechWatchZip(update, context):
     _watch(context.bot, update, True, True)
 
-
 watch_handler = CommandHandler(BotCommands.WatchCommand, watch,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 zip_watch_handler = CommandHandler(BotCommands.ZipWatchCommand, watchZip,
-                                   filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
-                                   run_async=True)
+                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 leech_watch_handler = CommandHandler(BotCommands.LeechWatchCommand, leechWatch,
-                                     filters=CustomFilters.owner_filter | CustomFilters.authorized_user,
-                                     run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 leech_zip_watch_handler = CommandHandler(BotCommands.LeechZipWatchCommand, leechWatchZip,
-                                         filters=CustomFilters.owner_filter | CustomFilters.authorized_user,
-                                         run_async=True)
+                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 quality_handler = CallbackQueryHandler(select_format, pattern="qu", run_async=True)
 
 dispatcher.add_handler(watch_handler)

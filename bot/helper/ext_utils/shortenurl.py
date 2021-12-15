@@ -12,7 +12,7 @@ from bot import LOGGER, SHORTENER, SHORTENER_API
 def short_url(longurl):
     if SHORTENER is None and SHORTENER_API is None:
         return longurl
-
+        
     if "shorte.st" in SHORTENER:
         disable_warnings()
         link = requests.get(f'http://api.shorte.st/stxt/{SHORTENER_API}/{longurl}', verify=False).text

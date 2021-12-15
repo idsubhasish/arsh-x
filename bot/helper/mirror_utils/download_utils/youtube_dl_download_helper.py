@@ -184,3 +184,4 @@ class YoutubeDLHelper(DownloadHelper):
         self.is_cancelled = True
         if not self.downloading:
             self.onDownloadError("Download Cancelled by User!")
+

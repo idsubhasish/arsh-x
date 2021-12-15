@@ -1,5 +1,5 @@
 # Implement By - @VarnaX-279
-# Modified By - @arshsisodiya
+# Modified By -@arshsisodiya
 
 import time
 import string
@@ -9,8 +9,8 @@ import logging
 from telegraph import Telegraph
 from telegraph.exceptions import RetryAfterError
 
-from bot import LOGGER
-from bot import AUTHOR_NAME, AUTHOR_URL, TITLE_NAME
+from bot import LOGGER, AUTHOR_NAME, AUTHOR_URL
+
 
 class TelegraphHelper:
 	def __init__(self, author_name=None, author_url=None):
@@ -56,5 +56,6 @@ class TelegraphHelper:
 			LOGGER.warning(f'Telegraph Flood control exceeded. I will sleep for {st.retry_after} seconds.')
 			time.sleep(st.retry_after)
 			return self.edit_page(path, title, content)
+
 
 telegraph=TelegraphHelper(f'{AUTHOR_NAME}', f'{AUTHOR_URL}')
