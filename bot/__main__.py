@@ -168,27 +168,31 @@ help = telegraph.create_page(
     )["path"]
 
 help_string = f'''
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+/{BotCommands.LeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram, Use /{BotCommands.LeechCommand} s</b> to select files before leeching
 
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+/{BotCommands.ZipLeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram and upload the file/folder compressed with zip extension
 
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
+/{BotCommands.UnzipLeechCommand}</b> [download_url][magnet_link][torent_file]: Start leeching to Telegram and upload the file/folder extracted from any archive extension
 
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
+/{BotCommands.LeechWatchCommand}</b> [yt-dlp supported link]: Leech yt-dlp supported link
 
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
+/{BotCommands.LeechZipWatchCommand}</b> [yt-dlp supported link]: Leech yt-dlp supported link as zip
 
-/{BotCommands.RestartCommand}: Restart and update the bot
+/{BotCommands.LeechSetCommand}</b>: Leech settings
 
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
+/{BotCommands.SetThumbCommand}</b>: Reply photo to set it as Thumbnail
 
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
+/{BotCommands.QbLeechCommand}</b> [magnet_link][torrent_file][torrent_file_url]: Start leeching to Telegram using qBittorrent, Use /{BotCommands.QbLeechCommand} s</b> to select files before leeching
 
-/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
+/{BotCommands.QbZipLeechCommand}</b> [magnet_link][torrent_file][torrent_file_url]: Start leeching to Telegram using qBittorrent and upload the file/folder compressed with zip extension
 
-/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
+/{BotCommands.QbUnzipLeechCommand}</b> [magnet_link][torrent_file][torrent_file_url]: Start leeching to Telegram using qBittorrent and upload the file/folder extracted from any archive extension
+
+/{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
+
+/{BotCommands.StatusCommand}: Shows a status of all the downloads
+
 '''
 
 def bot_help(update, context):
@@ -199,36 +203,20 @@ def bot_help(update, context):
 
 botcmds = [
 
-        (f'{BotCommands.MirrorCommand}', 'Mirror'),
-        (f'{BotCommands.ZipMirrorCommand}','Mirror and upload as zip'),
-        (f'{BotCommands.UnzipMirrorCommand}','Mirror and extract files'),
-        (f'{BotCommands.QbMirrorCommand}','Mirror torrent using qBittorrent'),
-        (f'{BotCommands.QbZipMirrorCommand}','Mirror torrent and upload as zip using qb'),
-        (f'{BotCommands.QbUnzipMirrorCommand}','Mirror torrent and extract files using qb'),
-        (f'{BotCommands.WatchCommand}','Mirror yt-dlp supported link'),
-        (f'{BotCommands.ZipWatchCommand}','Mirror yt-dlp supported link as zip'),
-        (f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
         (f'{BotCommands.LeechCommand}','Leech'),
         (f'{BotCommands.ZipLeechCommand}','Leech and upload as zip'),
         (f'{BotCommands.UnzipLeechCommand}','Leech and extract files'),
+        (f'{BotCommands.LeechWatchCommand}','Leech yt-dlp supported link'),
+        (f'{BotCommands.LeechZipWatchCommand}','Leech yt-dlp supported link as zip'),
+        (f'{BotCommands.LeechSetCommand}', 'Leech settings'),
+        (f'{BotCommands.SetThumbCommand}', 'Set thumbnail'),
         (f'{BotCommands.QbLeechCommand}','Leech torrent using qBittorrent'),
         (f'{BotCommands.QbZipLeechCommand}','Leech torrent and upload as zip using qb'),
         (f'{BotCommands.QbUnzipLeechCommand}','Leech torrent and extract using qb'),
-        (f'{BotCommands.LeechWatchCommand}','Leech yt-dlp supported link'),
-        (f'{BotCommands.LeechZipWatchCommand}','Leech yt-dlp supported link as zip'),
-        (f'{BotCommands.CountCommand}','Count file/folder of Drive'),
-        (f'{BotCommands.DeleteCommand}','Delete file/folder from Drive'),
         (f'{BotCommands.CancelMirror}','Cancel a task'),
-        (f'{BotCommands.CancelAllCommand}','Cancel all downloading tasks'),
-        (f'{BotCommands.ListCommand}','Search in Drive'),
-        (f'{BotCommands.LeechSetCommand}','Leech settings'),
-        (f'{BotCommands.SetThumbCommand}','Set thumbnail'),
         (f'{BotCommands.StatusCommand}','Get mirror status message'),
         (f'{BotCommands.StatsCommand}','Bot usage stats'),
-        (f'{BotCommands.PingCommand}','Ping the bot'),
-        (f'{BotCommands.RestartCommand}','Restart the bot'),
-        (f'{BotCommands.LogCommand}','Get the bot Log'),
-        (f'{BotCommands.HelpCommand}','Get detailed help')
+
     ]
 
 def main():
