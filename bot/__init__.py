@@ -194,6 +194,15 @@ if os.path.exists("logs_chat.txt"):
             #    LOGGER.info(line.split())
             LOGS_CHATS.add(int(line.split()[0]))
 try:
+    achats = getConfig("LOGS_CHATS")
+    achats = achats.split(" ")
+    for chats in achats:
+        LOGS_CHATS.add(int(chats))
+except:
+    logging.warning('Logs Chat Details not provided!')
+    pass
+
+try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
     parent_id = getConfig('GDRIVE_FOLDER_ID')
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
