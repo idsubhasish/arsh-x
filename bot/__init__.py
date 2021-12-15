@@ -1,5 +1,3 @@
-from typing import Any
-
 import logging
 import os
 import threading
@@ -14,12 +12,9 @@ import json
 import qbittorrentapi as qba
 import telegram.ext as tg
 
-from pyrogram import Client
 from psycopg2 import Error
 from dotenv import load_dotenv
-from pyrogram import Client, filters
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, ChatAdminRequired
-from pyrogram.types import ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client
 
 faulthandler.enable()
 
