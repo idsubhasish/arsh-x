@@ -1,3 +1,5 @@
+from typing import Any
+
 import logging
 import os
 import threading
@@ -15,6 +17,9 @@ import telegram.ext as tg
 from pyrogram import Client
 from psycopg2 import Error
 from dotenv import load_dotenv
+from pyrogram import Client, filters
+from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, ChatAdminRequired
+from pyrogram.types import ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton
 
 faulthandler.enable()
 
@@ -103,6 +108,15 @@ aria2 = aria2p.API(
 def get_client() -> qba.TorrentsAPIMixIn:
     return qba.Client(host="localhost", port=8090)
 
+"""
+trackers = subprocess.check_output(["curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all | awk '$0'"], shell=True).decode('utf-8')
+
+trackerslist = set(trackers.split("\n"))
+trackerslist.remove("")
+trackerslist = "\n\n".join(trackerslist)
+get_client().application.set_preferences({"add_trackers":f"{trackerslist}"})
+"""
+
 def aria2c_init():
     try:
         logging.info("Initializing Aria2c")
@@ -127,16 +141,12 @@ BOT_TOKEN = None
 
 download_dict_lock = threading.Lock()
 status_reply_dict_lock = threading.Lock()
-search_dict_lock = threading.Lock()
 # Key: update.effective_chat.id
 # Value: telegram.Message
 status_reply_dict = {}
 # Key: update.message.message_id
 # Value: An object of Status
 download_dict = {}
-# key: search_id
-# Value: client, search_results, total_results, total_pages, pageNo, start
-search_dict = {}
 # Stores list of users and chats the bot is authorized to use in
 AUTHORIZED_CHATS = set()
 SUDO_USERS = set()
@@ -167,22 +177,12 @@ try:
         SUDO_USERS.add(int(chats))
 except:
     pass
-
 if os.path.exists("logs_chat.txt"):
     with open("logs_chat.txt", "r+") as f:
         lines = f.readlines()
         for line in lines:
             #    LOGGER.info(line.split())
             LOGS_CHATS.add(int(line.split()[0]))
-try:
-    achats = getConfig("LOGS_CHATS")
-    achats = achats.split(" ")
-    for chats in achats:
-        LOGS_CHATS.add(int(chats))
-except:
-    logging.warning('Logs Chat Details not provided!')
-    pass
-
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
     parent_id = getConfig('GDRIVE_FOLDER_ID')
@@ -229,12 +229,12 @@ app = Client('pyrogram', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_t
 
 try:
     TG_SPLIT_SIZE = getConfig('TG_SPLIT_SIZE')
-    if len(TG_SPLIT_SIZE) == 0 or int(TG_SPLIT_SIZE) > 2097152000:
+    if len(TG_SPLIT_SIZE) == 0 or int(TG_SPLIT_SIZE) > 2097151000:
         raise KeyError
     else:
         TG_SPLIT_SIZE = int(TG_SPLIT_SIZE)
 except KeyError:
-    TG_SPLIT_SIZE = 2097152000
+    TG_SPLIT_SIZE = 2097151000
 try:
     STATUS_LIMIT = getConfig('STATUS_LIMIT')
     if len(STATUS_LIMIT) == 0:
@@ -269,13 +269,18 @@ except KeyError:
 try:
     INDEX_URL = getConfig('INDEX_URL')
     if len(INDEX_URL) == 0:
-        INDEX_URL = None
-        INDEX_URLS.append(None)
+        raise KeyError
     else:
         INDEX_URLS.append(INDEX_URL)
 except KeyError:
     INDEX_URL = None
     INDEX_URLS.append(None)
+try:
+    SEARCH_API_LINK = getConfig('SEARCH_API_LINK')
+    if len(SEARCH_API_LINK) == 0:
+        raise KeyError
+except KeyError:
+    SEARCH_API_LINK = None
 try:
     TORRENT_DIRECT_LIMIT = getConfig('TORRENT_DIRECT_LIMIT')
     if len(TORRENT_DIRECT_LIMIT) == 0:
@@ -363,6 +368,11 @@ try:
 except KeyError:
     BLOCK_MEGA_LINKS = False
 try:
+    WEB_PINCODE = getConfig('WEB_PINCODE')
+    WEB_PINCODE = WEB_PINCODE.lower() == 'true'
+except KeyError:
+    WEB_PINCODE = False
+try:
     SHORTENER = getConfig('SHORTENER')
     SHORTENER_API = getConfig('SHORTENER_API')
     if len(SHORTENER) == 0 or len(SHORTENER_API) == 0:
@@ -398,6 +408,11 @@ try:
 except KeyError:
     EQUAL_SPLITS = False
 try:
+    QB_SEED = getConfig('QB_SEED')
+    QB_SEED = QB_SEED.lower() == 'true'
+except KeyError:
+    QB_SEED = False
+try:
     CUSTOM_FILENAME = getConfig('CUSTOM_FILENAME')
     if len(CUSTOM_FILENAME) == 0:
         raise KeyError
@@ -411,34 +426,35 @@ try:
 except KeyError:
     PHPSESSID = None
     CRYPT = None
+
 try:
     GD_INFO = getConfig('GD_INFO')
     if len(GD_INFO) == 0:
-        GD_INFO = None
+        GD_INFO = 'Uploaded by Helios Mirror Bot'
 except KeyError:
     GD_INFO = 'Uploaded by Helios Mirror Bot'
 
 try:
     TITLE_NAME = getConfig('TITLE_NAME')
     if len(TITLE_NAME) == 0:
-        TITLE_NAME = None
+        TITLE_NAME = 'Helios-Mirror-Search'
 except KeyError:
     TITLE_NAME = 'Helios-Mirror-Search'
 
 try:
     AUTHOR_NAME = getConfig('AUTHOR_NAME')
     if len(AUTHOR_NAME) == 0:
-        AUTHOR_NAME = None
+        AUTHOR_NAME = 'Helios-Mirror-Bot'
 except KeyError:
     AUTHOR_NAME = 'Helios-Mirror-Bot'
 
 try:
     AUTHOR_URL = getConfig('AUTHOR_URL')
     if len(AUTHOR_URL) == 0:
-        AUTHOR_URL = None
+        AUTHOR_URL = 'https://t.me/heliosmirror'
 except KeyError:
     AUTHOR_URL = 'https://t.me/heliosmirror'
-    
+
 try:
     HEROKU_APP_NAME = getConfig('HEROKU_APP_NAME')
     if len(HEROKU_APP_NAME) == 0:
@@ -446,7 +462,16 @@ try:
 except KeyError:
     logging.warning('HEROKU_APP_NAME not provided!')
     HEROKU_APP_NAME = None
-    
+
+try:
+    CHANNEL_USERNAME = getConfig('CHANNEL_USERNAME')
+    if len(CHANNEL_USERNAME) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('CHANNEL_USERNAME not provided!')
+    CHANNEL_USERNAME = None
+
+
 try:
     HEROKU_API_KEY = getConfig('HEROKU_API_KEY')
     if len(HEROKU_API_KEY) == 0:
@@ -454,35 +479,37 @@ try:
 except KeyError:
     logging.warning('HEROKU_API_KEY not provided!')
     HEROKU_API_KEY = None
-
-
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
-        TOKEN_PICKLE_URL = None
-    else:
+        raise KeyError
+    try:
         res = requests.get(TOKEN_PICKLE_URL)
         if res.status_code == 200:
             with open('token.pickle', 'wb+') as f:
                 f.write(res.content)
                 f.close()
         else:
-            logging.error(f"Failed to download token.pickle {res.status_code}")
-            raise KeyError
+            logging.error(f"Failed to download token.pickle, link got HTTP response: {res.status_code}")
+    except Exception as e:
+        logging.error(str(e))
 except KeyError:
     pass
 try:
     ACCOUNTS_ZIP_URL = getConfig('ACCOUNTS_ZIP_URL')
     if len(ACCOUNTS_ZIP_URL) == 0:
-        ACCOUNTS_ZIP_URL = None
+        raise KeyError
     else:
-        res = requests.get(ACCOUNTS_ZIP_URL)
-        if res.status_code == 200:
-            with open('accounts.zip', 'wb+') as f:
-                f.write(res.content)
-                f.close()
-        else:
-            logging.error(f"Failed to download accounts.zip {res.status_code}")
+        try:
+            res = requests.get(ACCOUNTS_ZIP_URL)
+            if res.status_code == 200:
+                with open('accounts.zip', 'wb+') as f:
+                    f.write(res.content)
+                    f.close()
+            else:
+                logging.error(f"Failed to download accounts.zip, link got HTTP response: {res.status_code}")
+        except Exception as e:
+            logging.error(str(e))
             raise KeyError
         subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
         os.remove("accounts.zip")
@@ -491,16 +518,17 @@ except KeyError:
 try:
     MULTI_SEARCH_URL = getConfig('MULTI_SEARCH_URL')
     if len(MULTI_SEARCH_URL) == 0:
-        MULTI_SEARCH_URL = None
-    else:
+        raise KeyError
+    try:
         res = requests.get(MULTI_SEARCH_URL)
         if res.status_code == 200:
             with open('drive_folder', 'wb+') as f:
                 f.write(res.content)
                 f.close()
         else:
-            logging.error(f"Failed to download drive_folder {res.status_code}")
-            raise KeyError
+            logging.error(f"Failed to download drive_folder, link got HTTP response: {res.status_code}")
+    except Exception as e:
+        logging.error(str(e))
 except KeyError:
     pass
 try:
@@ -515,10 +543,11 @@ try:
                 f.close()
         else:
             logging.error(f"Failed to download cookies.txt, link got HTTP response: {res.status_code}")
-    except RequestException as e:
+    except Exception as e:
         logging.error(str(e))
 except KeyError:
     pass
+
 DRIVES_NAMES.append("Main")
 DRIVES_IDS.append(parent_id)
 if os.path.exists('drive_folder'):
@@ -535,13 +564,21 @@ if os.path.exists('drive_folder'):
                 INDEX_URLS.append(temp[2])
             except IndexError as e:
                 INDEX_URLS.append(None)
-
-SEARCH_PLUGINS = os.environ.get('SEARCH_PLUGINS', None)
-if SEARCH_PLUGINS is not None:
+try:
+    SEARCH_PLUGINS = getConfig('SEARCH_PLUGINS')
+    if len(SEARCH_PLUGINS) == 0:
+        raise KeyError
     SEARCH_PLUGINS = json.loads(SEARCH_PLUGINS)
     qbclient = get_client()
+    qb_plugins = qbclient.search_plugins()
+    if qb_plugins:
+        for plugin in qb_plugins:
+            p = plugin['name']
+            qbclient.search_uninstall_plugin(names=p)
     qbclient.search_install_plugin(SEARCH_PLUGINS)
+except KeyError:
+    SEARCH_PLUGINS = None
 
-updater = tg.Updater(token=BOT_TOKEN, request_kwargs={'read_timeout': 30, 'connect_timeout': 15})
+updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher

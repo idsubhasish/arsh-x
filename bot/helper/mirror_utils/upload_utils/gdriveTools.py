@@ -339,7 +339,7 @@ class GoogleDriveHelper:
         while True:
             response = self.__service.files().list(supportsTeamDrives=True,
                                                    includeTeamDriveItems=True,
-                                                   q=f"'{folder_id}' in parents",
+                                                   q=f"'{folder_id}' in parents and trashed = false",
                                                    spaces='drive',
                                                    pageSize=200,
                                                    fields='nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
@@ -558,10 +558,10 @@ class GoogleDriveHelper:
         return
 
     def escapes(self, str):
-        chars = ['\\', "'", '"', r'\a', r'\b', r'\f', r'\n', r'\r', r'\s', r'\t']
+        chars = ['\\', "'", '"', r'\a', r'\b', r'\f', r'\n', r'\r', r'\t']
         for char in chars:
-            str = str.replace(char, ' ')
-        return str
+            str = str.replace(char, '\\' + char)
+        return str.strip()
 
     def get_recursive_list(self, file, rootid = "root"):
         rtnlist = []
@@ -583,7 +583,7 @@ class GoogleDriveHelper:
         rtnlist.reverse()
         return rtnlist
 
-    def drive_query(self, parent_id, fileName, stopDup, isRecursive , itemType):
+    def drive_query(self, parent_id, fileName, stopDup, isRecursive, itemType):
         try:
             if isRecursive:
                 if stopDup:
@@ -660,8 +660,7 @@ class GoogleDriveHelper:
 
     def drive_list(self, fileName, stopDup=False, noMulti=False, isRecursive=True, itemType=""):
         msg = ""
-        if not stopDup:
-            fileName = self.escapes(str(fileName))
+        fileName = self.escapes(str(fileName))
         contents_count = 0
         Title = False
         if len(DRIVES_IDS) > 1:
@@ -679,7 +678,7 @@ class GoogleDriveHelper:
             elif not response["files"]:
                 continue
             if not Title:
-                msg += f'<h4>Search Result For {fileName}</h4><br><br>'
+                msg += f'<h4>Search Result For {fileName}</h4>'
                 Title = True
             if len(DRIVES_NAMES) > 1 and DRIVES_NAMES[index] is not None:
                 msg += f"╾────────────╼<br><b>{DRIVES_NAMES[index]}</b><br>╾────────────╼<br>"
@@ -725,7 +724,7 @@ class GoogleDriveHelper:
                             msg += f' <b>| <a href="{urls}">View Link</a></b>'
                 msg += '<br><br>'
                 contents_count += 1
-                if len(msg.encode('utf-8')) > 40000 :
+                if len(msg.encode('utf-8')) > 39000:
                     self.telegraph_content.append(msg)
                     msg = ""
             if noMulti:
@@ -740,7 +739,7 @@ class GoogleDriveHelper:
         for content in self.telegraph_content:
             self.path.append(
                 telegraph.create_page(
-                    title=f'{TITLE_NAME}',
+                    title = f'{TITLE_NAME}',
                     content=content
                 )["path"]
             )

@@ -1,3 +1,4 @@
+config.env
 *auth_token.txt
 *.pyc
 data*
@@ -5,10 +6,11 @@ data*
 .idea
 *.json
 *.pickle
+.netrc
+log.txt
 authorized_chats.txt
 sudo_users.txt
 accounts/*
 Thumbnails/*
 drive_folder
 cookies.txt
-config.env

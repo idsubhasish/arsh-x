@@ -1,5 +1,5 @@
 # Implement By - @VarnaX-279
-# Modified By - @arshsisodiya
+# Modified By -@arshsisodiya
 
 import time
 import string
@@ -9,8 +9,8 @@ import logging
 from telegraph import Telegraph
 from telegraph.exceptions import RetryAfterError
 
-from bot import LOGGER
-from bot import AUTHOR_NAME, AUTHOR_URL, TITLE_NAME
+from bot import LOGGER, AUTHOR_NAME, AUTHOR_URL
+
 
 class TelegraphHelper:
 	def __init__(self, author_name=None, author_url=None):
@@ -33,9 +33,9 @@ class TelegraphHelper:
 	def create_page(self, title, content):
 		try:
 			return self.telegraph.create_page(
-				title = f'{TITLE_NAME}',
-				author_name=f'{AUTHOR_NAME}',
-				author_url=f'{AUTHOR_URL}',
+				title = title,
+				author_name=self.author_name,
+				author_url=self.author_url,
 				html_content=content
 			)
 		except RetryAfterError as st:
@@ -47,9 +47,9 @@ class TelegraphHelper:
 		try:
 			return self.telegraph.edit_page(
 				path = path,
-				title=f'{TITLE_NAME}',
-				author_name=f'{AUTHOR_NAME}',
-				author_url=f'{AUTHOR_URL}',
+				title = title,
+				author_name=self.author_name,
+				author_url=self.author_url,
 				html_content=content
 			)
 		except RetryAfterError as st:

@@ -13,13 +13,14 @@ from telegram import InlineKeyboardMarkup
 from requests.exceptions import RequestException
 
 from bot import Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
-                BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, \
+                BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, QB_SEED, \
                 dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, LOGS_CHATS
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
 from bot.helper.mirror_utils.download_utils.mega_downloader import MegaDownloadHelper
+from bot.helper.mirror_utils.download_utils.gd_downloader import GdDownloadHelper
 from bot.helper.mirror_utils.download_utils.qbit_downloader import QbitTorrent
 from bot.helper.mirror_utils.download_utils.direct_link_generator import direct_link_generator
 from bot.helper.mirror_utils.download_utils.telegram_downloader import TelegramDownloadHelper
@@ -164,29 +165,21 @@ class MirrorListener(listeners.MirrorListeners):
                         fs_utils.split(f_path, f_size, filee, dirpath, TG_SPLIT_SIZE)
                         os.remove(f_path)
         if self.isLeech:
-            self._extracted_from_onDownloadComplete_101(up_name, size, gid)
+            LOGGER.info(f"Leech Name: {up_name}")
+            tg = pyrogramEngine.TgUploader(up_name, self)
+            tg_upload_status = TgUploadStatus(tg, size, gid, self)
+            with download_dict_lock:
+                download_dict[self.uid] = tg_upload_status
+            update_all_messages()
+            tg.upload()
         else:
-            self._extracted_from_onDownloadComplete_109(up_name, size, gid)
-
-    # TODO Rename this here and in `onDownloadComplete`
-    def _extracted_from_onDownloadComplete_109(self, up_name, size, gid):
-        LOGGER.info(f"Upload Name: {up_name}")
-        drive = gdriveTools.GoogleDriveHelper(up_name, self)
-        upload_status = UploadStatus(drive, size, gid, self)
-        with download_dict_lock:
-            download_dict[self.uid] = upload_status
-        update_all_messages()
-        drive.upload(up_name)
-
-    # TODO Rename this here and in `onDownloadComplete`
-    def _extracted_from_onDownloadComplete_101(self, up_name, size, gid):
-        LOGGER.info(f"Leech Name: {up_name}")
-        tg = pyrogramEngine.TgUploader(up_name, self)
-        tg_upload_status = TgUploadStatus(tg, size, gid, self)
-        with download_dict_lock:
-            download_dict[self.uid] = tg_upload_status
-        update_all_messages()
-        tg.upload()
+            LOGGER.info(f"Upload Name: {up_name}")
+            drive = gdriveTools.GoogleDriveHelper(up_name, self)
+            upload_status = UploadStatus(drive, size, gid, self)
+            with download_dict_lock:
+                download_dict[self.uid] = upload_status
+            update_all_messages()
+            drive.upload(up_name)
 
     def onDownloadError(self, error):
         error = error.replace('<', ' ')
@@ -244,8 +237,16 @@ class MirrorListener(listeners.MirrorListeners):
                 if fmsg != '':
                     time.sleep(1.5)
                     sendMessage(msg + fmsg, self.bot, self.update)
+            if self.isQbit and QB_SEED:
+                return
+            else:
                 with download_dict_lock:
-                    count = self._extracted_from_onUploadComplete_30()
+                    try:
+                        fs_utils.clean_download(download_dict[self.uid].path())
+                    except FileNotFoundError:
+                        pass
+                    del download_dict[self.uid]
+                    count = len(download_dict)
                 if count == 0:
                     self.clean()
                 else:
@@ -299,13 +300,22 @@ class MirrorListener(listeners.MirrorListeners):
                                             parse_mode=ParseMode.HTML)
                     except Exception as e:
                         LOGGER.warning(e)
-        try:
-            fs_utils.clean_download(download_dict[self.uid].path())
-        except FileNotFoundError:
-            pass
-        del download_dict[self.uid]
+
         sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
-        return len(download_dict)
+        if self.isQbit and QB_SEED:
+            return
+        else:
+            with download_dict_lock:
+                try:
+                    fs_utils.clean_download(download_dict[self.uid].path())
+                except FileNotFoundError:
+                    pass
+                del download_dict[self.uid]
+                count = len(download_dict)
+            if count == 0:
+                self.clean()
+            else:
+                update_all_messages()
 
     def onUploadError(self, error):
         e_str = error.replace('<', '').replace('>', '')
@@ -398,7 +408,11 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     gdtot_link = bot_utils.is_gdtot_link(link)
 
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link):
-        return _extracted_from__mirror_71(bot, update)
+        help_msg = "<b>Send link along with command line:</b>"
+        help_msg += "\n<b>or replyto link or file:</b>"
+        help_msg += "\n\n<b>Direct link authorization:</b>"
+        help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword\nusername\npassword"
+        return sendMessage(help_msg, bot, update)
     elif not bot_utils.is_mega_link(link) and not isQbit and not bot_utils.is_magnet(link) \
          and not os.path.exists(link) and not bot_utils.is_gdrive_link(link):
         try:
@@ -450,13 +464,6 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
         ariaDlManager.add_download(link, f'{DOWNLOAD_DIR}{listener.uid}/', listener, name)
         sendStatusMessage(update, bot)
 
-# TODO Rename this here and in `_mirror`
-def _extracted_from__mirror_71(bot, update):
-    help_msg = "<b>Send link or torrent along with command line or reply to link or file </b>"
-    help_msg += "\n\n<b>for password protected index link authorization:</b>"
-    help_msg += "\n<code>/command</code> {link} \nusername\npassword"
-    return sendMessage(help_msg, bot, update)
-
 
 def mirror(update, context):
     _mirror(context.bot, update)
@@ -499,13 +506,14 @@ mirror_handler = CommandHandler(BotCommands.MirrorCommand, mirror,
 unzip_mirror_handler = CommandHandler(BotCommands.UnzipMirrorCommand, unzip_mirror,
                                 filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
 zip_mirror_handler = CommandHandler(BotCommands.ZipMirrorCommand, zip_mirror,
-                                    filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 qb_mirror_handler = CommandHandler(BotCommands.QbMirrorCommand, qb_mirror,
                                 filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
 qb_unzip_mirror_handler = CommandHandler(BotCommands.QbUnzipMirrorCommand, qb_unzip_mirror,
-                                         filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
 qb_zip_mirror_handler = CommandHandler(BotCommands.QbZipMirrorCommand, qb_zip_mirror,
                                 filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+
 leech_handler = CommandHandler(BotCommands.LeechCommand, leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 unzip_leech_handler = CommandHandler(BotCommands.UnzipLeechCommand, unzip_leech,
