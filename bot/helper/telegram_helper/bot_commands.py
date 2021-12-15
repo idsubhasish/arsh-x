@@ -50,5 +50,5 @@ class _BotCommands:
         self.QbZipLeechCommand = getCommand('QBZIPLEECH_COMMAND', 'qbzipleech')
         self.LeechWatchCommand = getCommand('LEECHWATCH_COMMAND', 'leechwatch')
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_COMMAND', 'leechzipwatch')
-
+        self.TorrentSearchCommand = getCommand('TOR_COMMAND', 'TS')
 BotCommands = _BotCommands()

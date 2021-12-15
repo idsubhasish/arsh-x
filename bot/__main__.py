@@ -155,7 +155,7 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.ListCommand}</b> [query]: Search in Google Drive(s)
 <br><br>
-<b>/{BotCommands.SearchCommand}</b> [query]: Search for torrents with API
+<b>/{BotCommands.TorrentSearchCommand}</b> [query]: Search for torrents with API
 <br>sites: <code>rarbg, 1337x, yts, etzv, tgx, torlock, piratebay, nyaasi, ettv</code><br><br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
