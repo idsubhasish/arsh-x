@@ -19,7 +19,7 @@ from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
-from .modules import authorize, cancel_mirror, mirror_status, mirror, clone, watch, speedtest, count, leech_settings
+from .modules import authorize, cancel_mirror, mirror_status, mirror, clone, watch, speedtest, count, leech_settings, usage
 
 
 def stats(update, context):
@@ -160,6 +160,8 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+<br><br>
+<b>/{BotCommands.UsageCommand}</b>: Show Heroku Dyno Usage
 '''
 
 help = telegraph.create_page(
@@ -192,6 +194,8 @@ help_string = f'''
 /{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
 
 /{BotCommands.StatusCommand}: Shows a status of all the downloads
+
+/{BotCommands.UsageCommand}: Show Heroku Dyno Usage [Owner Only]
 
 '''
 
