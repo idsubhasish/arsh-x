@@ -45,7 +45,7 @@ def select_type(update, context):
         query.answer()
         list_method = data[3]
         item_type = data[2]
-        editMessage(f"<b>Searching for <i>{key}</i></b>", msg)
+        editMessage(f"<b>Searching for <i>{key}</i> Please wait...</b>", msg)
         threading.Thread(target=list_drive, args=(key, msg, list_method, item_type)).start()
     else:
         query.answer()
