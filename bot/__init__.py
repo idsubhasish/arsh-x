@@ -490,7 +490,6 @@ except KeyError:
     logging.warning('CHANNEL_USERNAME not provided!')
     CHANNEL_USERNAME = None
 
-
 try:
     HEROKU_API_KEY = getConfig('HEROKU_API_KEY')
     if len(HEROKU_API_KEY) == 0:
@@ -498,6 +497,15 @@ try:
 except KeyError:
     logging.warning('HEROKU_API_KEY not provided!')
     HEROKU_API_KEY = None
+
+try:
+    LOG_CHANNEL = int(getConfig('LOG_CHANNEL'))
+    if int(LOG_CHANNEL) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('LOG_CHANNEL not provided!')
+    LOG_CHANNEL = None
+
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
