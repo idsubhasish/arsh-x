@@ -108,7 +108,7 @@ class TgUploader:
                                                               disable_notification=True,
                                                               progress=self.upload_progress)
                     try:
-                        app.send_video(LOG_CHANNEL, video=self.sent_msg.video.file_id)
+                        app.send_video(LOG_CHANNEL, video=self.sent_msg.video.file_id, caption=cap_mono)
                     except Exception as err:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
                 elif filee.upper().endswith(AUDIO_SUFFIXES):
@@ -124,7 +124,7 @@ class TgUploader:
                                                               disable_notification=True,
                                                               progress=self.upload_progress)
                     try:
-                        app.send_audio(LOG_CHANNEL, audio=self.sent_msg.audio.file_id)
+                        app.send_audio(LOG_CHANNEL, audio=self.sent_msg.audio.file_id, caption=cap_mono)
                     except Exception as err:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
                 elif filee.upper().endswith(IMAGE_SUFFIXES):
@@ -135,7 +135,7 @@ class TgUploader:
                                                               disable_notification=True,
                                                               progress=self.upload_progress)
                     try:
-                        app.send_photo(LOG_CHANNEL, photo=self.sent_msg.photo.file_id)
+                        app.send_photo(LOG_CHANNEL, photo=self.sent_msg.photo.file_id, caption=cap_mono)
                     except Exception as err:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
                 else:
@@ -155,7 +155,7 @@ class TgUploader:
                                                              disable_notification=True,
                                                              progress=self.upload_progress)
                 try:
-                    app.send_document(LOG_CHANNEL, document=self.sent_msg.document.file_id)
+                    app.send_document(LOG_CHANNEL, document=self.sent_msg.document.file_id, caption=cap_mono)
                 except Exception as err:
                     LOGGER.error(f"Failed to log to channel:\n{err}")
         except FloodWait as f:
