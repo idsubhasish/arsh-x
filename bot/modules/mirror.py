@@ -408,8 +408,8 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     gdtot_link = bot_utils.is_gdtot_link(link)
 
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link):
-        help_msg = "<b>Send link along with command line:</b>"
-        help_msg += "\n<b>or replyto link or file:</b>"
+        help_msg = "Send link along with command line"
+        help_msg += "\nor reply to link or file"
         return sendMessage(help_msg, bot, update)
     elif not bot_utils.is_mega_link(link) and not isQbit and not bot_utils.is_magnet(link) \
          and not os.path.exists(link) and not bot_utils.is_gdrive_link(link):
