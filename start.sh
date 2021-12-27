@@ -1,1 +1,1 @@
-python3 -m bot & python3 fsub.py
+python3 -m bot
