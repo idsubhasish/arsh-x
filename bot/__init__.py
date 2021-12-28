@@ -163,6 +163,7 @@ SUDO_USERS = set()
 AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
 LOGS_CHATS = set()
+LOG_CHANNEL = set()
 if os.path.exists('authorized_chats.txt'):
     with open('authorized_chats.txt', 'r+') as f:
         lines = f.readlines()
@@ -200,6 +201,21 @@ try:
         LOGS_CHATS.add(int(chats))
 except:
     logging.warning('Logs Chat Details not provided!')
+    pass
+
+if os.path.exists("log_channel.txt"):
+    with open("logs_chat.txt", "r+") as f:
+        lines = f.readlines()
+        for line in lines:
+            #    LOGGER.info(line.split())
+            LOG_CHANNEL.add(int(line.split()[0]))
+try:
+    achats = getConfig("LOG_CHANNEL")
+    achats = achats.split(" ")
+    for chats in achats:
+        LOG_CHANNEL.add(int(chats))
+except:
+    logging.warning('Log Channel Details not provided!')
     pass
 
 try:
@@ -497,14 +513,6 @@ try:
 except KeyError:
     logging.warning('HEROKU_API_KEY not provided!')
     HEROKU_API_KEY = None
-
-try:
-    LOG_CHANNEL = int(getConfig('LOG_CHANNEL'))
-    if int(LOG_CHANNEL) == 0:
-        raise KeyError
-except KeyError:
-    logging.warning('LOG_CHANNEL not provided!')
-    LOG_CHANNEL = None
 
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
