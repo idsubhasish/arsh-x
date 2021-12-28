@@ -17,8 +17,8 @@ def list_buttons(update, context):
     except IndexError:
         return sendMessage('Send a search key along with command', context.bot, update)
     buttons = button_build.ButtonMaker()
-    buttons.sbutton("Drive Root", f"types {user_id} root")
-    buttons.sbutton("Recursive", f"types {user_id} recu")
+    buttons.sbutton("Normal", f"types {user_id} root")
+    buttons.sbutton("Deep", f"types {user_id} recu")
     buttons.sbutton("Cancel", f"types {user_id} cancel")
     button = InlineKeyboardMarkup(buttons.build_menu(2))
     sendMarkup('Choose option to list.', context.bot, update, button)
@@ -60,15 +60,10 @@ def list_drive(key, bmsg, list_method, item_type):
     if button:
         editMessage(msg, bmsg, button)
     else:
-        editMessage(f'No result found for <i>{key}</i> I`m not Google', bmsg)
+        editMessage(f'No result found for <i>{key}</i> Use Better Keywords', bmsg)
 
 
 list_handler = CommandHandler(BotCommands.ListCommand, list_buttons, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-list_type_handler = CallbackQueryHandler(select_type, pattern="types", run_async=True)
-dispatcher.add_handler(list_handler)
-dispatcher.add_handler(list_type_handler)
-
-list_handler = CommandHandler(BotCommands.SearchCommand, list_buttons, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 list_type_handler = CallbackQueryHandler(select_type, pattern="types", run_async=True)
 dispatcher.add_handler(list_handler)
 dispatcher.add_handler(list_type_handler)
