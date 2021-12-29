@@ -1,5 +1,4 @@
 import os
-
 def getCommand(name: str, command: str):
     try:
         if len(os.environ[name]) == 0:
@@ -52,4 +51,5 @@ class _BotCommands:
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_COMMAND', 'leechzipwatch')
         self.TorrentSearchCommand = getCommand('TOR_COMMAND', 'ts')
         self.UsageCommand = getCommand('USAGE_COMMAND', 'usage')
+        self.ConfigMenuCommand = getCommand('CONFIG_COMMAND', 'config')
 BotCommands = _BotCommands()
