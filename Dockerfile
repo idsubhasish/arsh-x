@@ -1,4 +1,4 @@
-FROM arshsisodiya/heliospublic:latest
+FROM arshsisodiya/heliosprivate:beta
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
