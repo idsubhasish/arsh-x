@@ -1,12 +1,14 @@
-from functools import wraps
-
+import asyncio
+import os
+import shlex
 import heroku3
-from pyrogram.types import Message
 
+from functools import wraps
+from pyrogram.types import Message
+from typing import Tuple
 from bot import HEROKU_API_KEY, HEROKU_APP_NAME
 
-
-# Implement by https://github.com/arshsisodiya
+# Reimplement by https://github.com/arshsisodiya
 # Setting Message
 
 def get_text(message: Message) -> [None, str]:
@@ -22,13 +24,15 @@ def get_text(message: Message) -> [None, str]:
         return None
 
 # Preparing For Setting Config
+# Reimplement by https://github.com/arshsisodiya and Based on this https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
+
 heroku_client = None
 if HEROKU_API_KEY:
     heroku_client = heroku3.from_key(HEROKU_API_KEY)
 
 def check_heroku(func):
     @wraps(func)
-    async def heroku_cli(message):
+    async def heroku_cli(client, message):
         heroku_app = None
         if not heroku_client:
             await message.reply_text("`Please Add HEROKU_API_KEY Key For This To Function To Work!`", parse_mode="markdown")
@@ -40,6 +44,6 @@ def check_heroku(func):
             except:
                 await message.reply_text(message, "`Heroku Api Key And App Name Doesn't Match!`", parse_mode="markdown")
             if heroku_app:
-                await func(message, heroku_app)
+                await func(client, message, heroku_app)
 
     return heroku_cli
