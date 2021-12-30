@@ -9,7 +9,7 @@ from bot import *
 
 @app.on_message(filters.command('setvar') & filters.user(OWNER_ID))
 @check_heroku
-async def set_varr(message, app_):
+async def set_varr(client, message, app_):
     msg_ = await message.reply_text("`Please Wait!`")
     heroku_var = app_.config()
     _var = get_text(message)
@@ -31,7 +31,7 @@ async def set_varr(message, app_):
         
 @app.on_message(filters.command('delvar') & filters.user(OWNER_ID))
 @check_heroku
-async def del_varr(message, app_):
+async def del_varr(client, message, app_):
     msg_ = await message.reply_text("`Please Wait!`", parse_mode="markdown")
     heroku_var = app_.config()
     _var = get_text(message)
