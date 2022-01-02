@@ -22,7 +22,8 @@ from tenacity import *
 from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_build
 from bot import parent_id, DOWNLOAD_DIR, IS_TEAM_DRIVE, INDEX_URL, USE_SERVICE_ACCOUNTS, BUTTON_FOUR_NAME, \
-                BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, VIEW_LINK, DRIVES_NAMES, DRIVES_IDS, INDEX_URLS, TITLE_NAME, GD_INFO
+                BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, VIEW_LINK, DRIVES_NAMES, DRIVES_IDS, INDEX_URLS, TITLE_NAME, GD_INFO, \
+                DRIVE_LINK, INDEX_LINK_NAME, DRIVE_LINK_NAME
 from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, setInterval
 from bot.helper.ext_utils.fs_utils import get_mime_type, get_path_size
@@ -128,7 +129,7 @@ class GoogleDriveHelper:
             msg = "Successfully deleted"
             LOGGER.info(f"Delete Result: {msg}")
         except HttpError as err:
-            if "File not found" in str(err):
+            if "File not found, Make sure Drive link is not Private" in str(err):
                 msg = "No such file exist"
             elif "insufficientFilePermissions" in str(err):
                 msg = "Insufficient File Permissions"
@@ -380,19 +381,21 @@ class GoogleDriveHelper:
                 msg += f'\n<b>Files: </b>{self.total_files}'
                 buttons = button_build.ButtonMaker()
                 durl = short_url(durl)
-                buttons.buildbutton("☁️ Drive Link", durl)
-                if INDEX_URL is not None:
+                if DRIVE_LINK:
+                    buttons.buildbutton(f"{DRIVE_LINK_NAME}", durl)
+                elif INDEX_URL is not None:
                     url_path = requests.utils.quote(f'{meta.get("name")}')
                     url = f'{INDEX_URL}/{url_path}/'
                     url = short_url(url)
-                    buttons.buildbutton("⚡ Index Link", url)
+                    buttons.buildbutton(f"{INDEX_LINK_NAME}", url)
             else:
                 file = self.copyFile(meta.get('id'), parent_id)
                 msg += f'<b>Name: </b><code>{file.get("name")}</code>'
                 durl = self.__G_DRIVE_BASE_DOWNLOAD_URL.format(file.get("id"))
                 buttons = button_build.ButtonMaker()
                 durl = short_url(durl)
-                buttons.buildbutton("☁️ Drive Link", durl)
+                if DRIVE_LINK:
+                    buttons.buildbutton(f"{DRIVE_LINK_NAME}", durl)
                 if mime_type is None:
                     mime_type = 'File'
                 msg += f'\n\n<b>Size: </b>{get_readable_file_size(int(meta.get("size", 0)))}'
@@ -401,7 +404,7 @@ class GoogleDriveHelper:
                     url_path = requests.utils.quote(f'{file.get("name")}')
                     url = f'{INDEX_URL}/{url_path}'
                     url = short_url(url)
-                    buttons.buildbutton("⚡ Index Link", url)
+                    buttons.buildbutton(f"{INDEX_LINK_NAME}", url)
                     if VIEW_LINK:
                         urls = f'{INDEX_URL}/{url_path}?a=view'
                         urls = short_url(urls)
@@ -420,12 +423,12 @@ class GoogleDriveHelper:
             LOGGER.error(err)
             if "User rate limit exceeded" in str(err):
                 msg = "User rate limit exceeded."
-            elif "File not found" in str(err):
+            elif "File not found, Make sure Drive link is not Private" in str(err):
                 token_service = self.alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
                     return self.clone(link)
-                msg = "File not found."
+                msg = "File not found, Make sure Drive link is not Private."
             else:
                 msg = f"Error.\n{err}"
             return msg, ""
@@ -789,12 +792,12 @@ class GoogleDriveHelper:
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
-            if "File not found" in str(err):
+            if "File not found, Make sure Drive link is not Private" in str(err):
                 token_service = self.alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
                     return self.count(link)
-                msg = "File not found."
+                msg = "File not found, Make sure Drive link is not Private."
             else:
                 msg = f"Error.\n{err}"
         return msg
@@ -846,12 +849,12 @@ class GoogleDriveHelper:
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
-            if "File not found" in str(err):
+            if "File not found, Make sure Drive link is not Private" in str(err):
                 token_service = self.alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
                     return self.helper(link)
-                msg = "File not found."
+                msg = "File not found, Make sure Drive link is not Private."
             else:
                 msg = f"Error.\n{err}"
             return msg, "", "", ""
@@ -877,7 +880,7 @@ class GoogleDriveHelper:
             LOGGER.error(err)
             if "downloadQuotaExceeded" in str(err):
                 err = "Download Quota Exceeded."
-            elif "File not found" in str(err):
+            elif "File not found, Make sure Drive link is not Private" in str(err):
                 token_service = self.alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
