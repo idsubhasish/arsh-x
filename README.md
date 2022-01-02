@@ -1,70 +1,5 @@
 This is a Telegram Bot written in Python for mirroring files on the Internet to your Google Drive or Telegram. Based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot)
 ### Fork of Anasty's Repo previously know as Slam Mirror Repo
-
-# Features:
-<details>
-    <summary><b>Click Here For More Details</b></summary>
-## By me
-- qBittorrent
-- Select files from Torrent before downloading using qbittorrent
-- Leech (splitting, thumbnail for each user, setting as document or as media for each user)
-- Size limiting for Torrent/Direct, Zip/Unzip, Mega and Clone
-- Stop duplicates for all tasks except yt-dlp tasks
-- Zip/Unzip G-Drive links
-- Counting files/folders from Google Drive link
-- View Link button, extra button to open file index link in broswer instead of direct download
-- Status Pages for unlimited tasks
-- Clone status
-- Search in multiple Drive folder/TeamDrive
-- Recursive Search (only with `root` or TeamDrive ID, folder ids will be skipped)
-- Multi-Search by token.pickle if exists 
-- Extract rar, zip and 7z splits with or without password
-- Zip file/folder with or without password
-- Use Toke.pickle if file not found with Service Account
-- Random Service Account at startup
-- Mirror/Leech by reply (soon will add for watch and clone)
-- Search for torrents with variable plugins using qBittorrent search engine
-- Many bugs has been fixed
-- Force Subscribe bot
-
-## From official and Other Repositories
-- Mirror direct download links, Torrent, and Telegram files to Google Drive
-- Mirror Mega.nz links to Google Drive (If you have non-premium Mega account, it will limit download to 5GB per 6 hours)
-- Copy files from someone's Drive to your Drive (Using Autorclone)
-- Download/Upload progress, Speeds and ETAs
-  Mirror all yt-dlp supported links
-- Docker support
-- Uploading to Team Drive
-- Index Link support
-- Service Account support
-- Delete files from Drive
-- Shortener support
-- Speedtest
-- Multiple Trackers support
-- Shell and Executor
-- Sudo with or without Database
-- Custom Filename* (Only for direct links, Telegram files and yt-dlp. Not for Mega links, Gdrive links or Torrents)
-- Extract or Compress password protected files.
-- Extract these filetypes and uploads to Google Drive
-```
-ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
-APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, 
-HFS, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, 
-NTFS, RPM, SquashFS, UDF, VHD, XAR, Z, tar.xz
-```
-- Direct links Supported:
-```
-letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
-fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
-sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
-streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
-1fichier.com, 1drv.ms (Only works for file not folder or business account),
-uptobox.com (Uptobox account must be premium), solidfiles.com
-```
-**See these examples for custom filename, Extract/Compress password protected files and downlaod from protected links**
-<p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/See%20Telegraph-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
-</details>
-
 # How to deploy?
 ## Simplest and easiest way
 ```
@@ -136,6 +71,9 @@ pip3 install -r requirements-cli.txt
 </details>
 
 ## Setting up config file
+    
+<details>
+    <summary><b>Click Here For More Details</b></summary>
 
 ```
 cp config_sample.env config.env
@@ -218,9 +156,15 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 - `BUTTON_FIVE_URL`:
 - `BUTTON_SIX_NAME`:
 - `BUTTON_SIX_URL`:
-- 
+    </details>
+    
 ## Bot commands to be set in [@BotFather](https://t.me/BotFather)
-
+    
+<details>
+<summary><b>Click Here For More Details</b></summary>
+    
+## Setting Bot Cpmmands in Telegram
+    
 ```
 mirror - Start mirroring
 zipmirror - Start mirroring and upload as .zip
@@ -250,12 +194,18 @@ del - [drive_url] Delete file from Drive
 log - Get the Bot Log [owner/sudo only]
 shell - Run commands in Shell [owner only]
 restart - Restart the Bot [owner/sudo only]
+usage - Heroku dyno usage [owner/sudo only]
+congig - check, set or delete config vars [owner/sudo only]
 stats - Bot Usage Stats
 ping - Ping the Bot
 help - All cmds with description
 ```
-
+</details>
+    
 ## Getting Google OAuth API credential file
+<details>
+    <summary><b>Click Here For More Details</b></summary>
+
 - Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials)
 - Go to the OAuth Consent tab, fill it, and save.
 - Go to the Credentials tab and click Create Credentials -> OAuth Client ID
@@ -269,7 +219,10 @@ help - All cmds with description
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
+    </details>
+    
 ## Deploying On VPS
+    
 <details>
     <summary><b>Click Here For More Details</b></summary>
 **IMPORTANT NOTE**: You must set `SERVER_PORT` variable to `80` or any other port you want to use.
