@@ -377,6 +377,13 @@ try:
     VIEW_LINK = VIEW_LINK.lower() == 'true'
 except KeyError:
     VIEW_LINK = False
+    
+try:
+    DRIVE_LINK = getConfig('DRIVE_LINK')
+    DRIVE_LINK = DRIVE_LINK.lower() == 'true'
+except KeyError:
+    DRIVE_LINK = True
+    
 try:
     IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE')
     IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == 'true'
@@ -485,6 +492,20 @@ try:
 except KeyError:
     AUTHOR_URL = 'https://t.me/heliosmirror'
 
+try:
+    INDEX_LINK_NAME = getConfig('INDEX_LINK_NAME')
+    if len(INDEX_LINK_NAME) == 0:
+        INDEX_LINK_NAME = '⚡ Index Link'
+except KeyError:
+    INDEX_LINK_NAME = '⚡ Index Link'
+    
+try:
+    DRIVE_LINK_NAME = getConfig('DRIVE_LINK_NAME')
+    if len(DRIVE_LINK_NAME) == 0:
+        DRIVE_LINK_NAME = '☁️ Drive Link'
+except KeyError:
+    DRIVE_LINK_NAME = '☁️ Drive Link'
+    
 try:
     HEROKU_APP_NAME = getConfig('HEROKU_APP_NAME')
     if len(HEROKU_APP_NAME) == 0:

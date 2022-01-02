@@ -11,7 +11,7 @@ from telegram.ext import CommandHandler
 
 from bot import INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
     BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, QB_SEED, \
-    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS
+    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS, DRIVE_LINK, INDEX_LINK_NAME, DRIVE_LINK_NAME
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.ext_utils.shortenurl import short_url
@@ -259,18 +259,19 @@ class MirrorListener(listeners.MirrorListeners):
                 msg += f'\n<b>Files: </b>{files}'
             buttons = button_build.ButtonMaker()
             link = short_url(link)
-            buttons.buildbutton("☁️ Drive Link", link)
-            LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
+            if DRIVE_LINK:
+                buttons.buildbutton(f"{DRIVE_LINK_NAME}", link)
+                LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
             if INDEX_URL is not None:
                 url_path = requests.utils.quote(f'{download_dict[self.uid].name()}')
                 share_url = f'{INDEX_URL}/{url_path}'
                 if os.path.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'):
                     share_url += '/'
                     share_url = short_url(share_url)
-                    buttons.buildbutton("⚡ Index Link", share_url)
+                    buttons.buildbutton(f"{INDEX_LINK_NAME}", share_url)
                 else:
                     share_url = short_url(share_url)
-                    buttons.buildbutton("⚡ Index Link", share_url)
+                    buttons.buildbutton(f"{INDEX_LINK_NAME}", share_url)
                     if VIEW_LINK:
                         share_urls = f'{INDEX_URL}/{url_path}?a=view'
                         share_urls = short_url(share_urls)
