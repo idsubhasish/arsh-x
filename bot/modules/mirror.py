@@ -11,7 +11,7 @@ from telegram.ext import CommandHandler
 
 from bot import INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
     BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, QB_SEED, \
-    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS
+    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS, CHAT_ID, DUMP_CHANNEL_LINK
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.ext_utils.shortenurl import short_url
@@ -225,15 +225,18 @@ class MirrorListener(listeners.MirrorListeners):
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
-                    link = f"https://t.me/c/{chat_id}/{msg_id}"
+                    link = f"https://t.me/c/{CHAT_ID}/{msg_id}"
                     fmsg += f"{index}. <a href='{link}'>{item}</a>\n"
+                    buttons = button_build.ButtonMaker()
+                    url = DUMP_CHANNEL_LINK
                     if len(fmsg.encode('utf-8') + msg.encode('utf-8')) > 4000:
                         time.sleep(1.5)
                         sendMessage(msg + fmsg, self.bot, self.update)
                         fmsg = ''
                 if fmsg != '':
                     time.sleep(1.5)
-                    sendMessage(msg + fmsg, self.bot, self.update)
+                    buttons.buildbutton("Click Here to Get The File", url)
+                    sendMarkup(msg + fmsg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
             if self.isQbit and QB_SEED:
                 return
             else:
@@ -497,17 +500,17 @@ def qb_zip_leech(update, context):
     _mirror(context.bot, update, True, isQbit=True, isLeech=True)
 
 mirror_handler = CommandHandler(BotCommands.MirrorCommand, mirror,
-                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 unzip_mirror_handler = CommandHandler(BotCommands.UnzipMirrorCommand, unzip_mirror,
-                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 zip_mirror_handler = CommandHandler(BotCommands.ZipMirrorCommand, zip_mirror,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 qb_mirror_handler = CommandHandler(BotCommands.QbMirrorCommand, qb_mirror,
-                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 qb_unzip_mirror_handler = CommandHandler(BotCommands.QbUnzipMirrorCommand, qb_unzip_mirror,
-                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 qb_zip_mirror_handler = CommandHandler(BotCommands.QbZipMirrorCommand, qb_zip_mirror,
-                                filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 
 leech_handler = CommandHandler(BotCommands.LeechCommand, leech,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)

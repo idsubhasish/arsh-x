@@ -63,7 +63,7 @@ def list_drive(key, bmsg, list_method, item_type):
         editMessage(f'No result found for <i>{key}</i> I`m not Google', bmsg)
 
 
-list_handler = CommandHandler(BotCommands.ListCommand, list_buttons, filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+list_handler = CommandHandler(BotCommands.ListCommand, list_buttons, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 list_type_handler = CallbackQueryHandler(select_type, pattern="types", run_async=True)
 dispatcher.add_handler(list_handler)
 dispatcher.add_handler(list_type_handler)

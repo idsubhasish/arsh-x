@@ -499,6 +499,22 @@ except KeyError:
     HEROKU_APP_NAME = None
 
 try:
+    CHAT_ID = getConfig('CHAT_ID')
+    if len(CHAT_ID) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('CHAT_ID not provided!')
+    CHAT_ID = None
+
+try:
+    DUMP_CHANNEL_LINK = getConfig('DUMP_CHANNEL_LINK')
+    if len(DUMP_CHANNEL_LINK) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('DUMP_CHANNEL_LINK not provided!')
+    DUMP_CHANNEL_LINK = None
+
+try:
     CHANNEL_USERNAME = getConfig('CHANNEL_USERNAME')
     if len(CHANNEL_USERNAME) == 0:
         raise KeyError
