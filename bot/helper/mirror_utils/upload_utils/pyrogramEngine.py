@@ -99,7 +99,7 @@ class TgUploader:
                         up_path = new_path
                     self.__sent_msg = self.__app.send_video(chat_id=self.__log_channel,
                                                               video=up_path,
-                                                              quote=True,
+                                                            #   quote=True,
                                                               caption=cap_mono,
                                                               parse_mode="html",
                                                               duration=duration,
@@ -119,7 +119,7 @@ class TgUploader:
                     duration , artist, title = get_media_info(up_path)
                     self.__sent_msg = self.__app.send_audio(chat_id=self.__log_channel,
                                                               audio=up_path,
-                                                              quote=True,
+                                                            #   quote=True,
                                                               caption=cap_mono,
                                                               parse_mode="html",
                                                               duration=duration,
@@ -137,7 +137,7 @@ class TgUploader:
                 elif filee.upper().endswith(IMAGE_SUFFIXES):
                     self.__sent_msg = self.__app.send_photo(chat_id=self.__log_channel,
                                                               photo=up_path,
-                                                              quote=True,
+                                                            #   quote=True,
                                                               caption=cap_mono,
                                                               parse_mode="html",
                                                               disable_notification=True,
@@ -159,7 +159,7 @@ class TgUploader:
                         return
                 self.__sent_msg = self.__app.send_document(chat_id=self.__log_channel,
                                                              document=up_path,
-                                                             quote=True,
+                                                            #  quote=True,
                                                              thumb=thumb,
                                                              caption=cap_mono,
                                                              parse_mode="html",
