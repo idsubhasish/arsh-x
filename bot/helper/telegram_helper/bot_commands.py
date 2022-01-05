@@ -17,7 +17,6 @@ class _BotCommands:
         self.CancelMirror = getCommand('CANCEL_COMMAND', 'cancel')
         self.CancelAllCommand = getCommand('CANCEL_ALL_COMMAND', 'cancelall')
         self.ListCommand = getCommand('LIST_COMMAND', 'list')
-        self.SearchCommand = getCommand('SEARCH_COMMAND', 'search')
         self.StatusCommand = getCommand('STATUS_COMMAND', 'status')
         self.AuthorizedUsersCommand =  getCommand('USERS_COMMAND', 'users')
         self.AuthorizeCommand =  getCommand('AUTH_COMMAND', 'authorize')
@@ -44,6 +43,5 @@ class _BotCommands:
         self.ZipLeechCommand = getCommand('ZIPLEECH_COMMAND', 'zipleech')
         self.LeechWatchCommand = getCommand('LEECHWATCH_COMMAND', 'leechwatch')
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_COMMAND', 'leechzipwatch')
-        self.UsageCommand = getCommand('USAGE_COMMAND', 'usage')
 
 BotCommands = _BotCommands()

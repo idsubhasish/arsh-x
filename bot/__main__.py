@@ -1,25 +1,25 @@
-import shutil, psutil
-import signal
 import os
-import asyncio
-import time
+import psutil
+import shutil
+import signal
 import subprocess
+import time
+from sys import executable
 
 from pyrogram import idle
-from sys import executable
 from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, OWNER_ID, AUTHORIZED_CHATS, LOGGER, Interval
+
+from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, OWNER_ID, AUTHORIZED_CHATS, \
+    LOGGER, Interval
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, sendLogFile
-from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
+from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.telegram_helper.filters import CustomFilters
 
-from .modules import authorize, cancel_mirror, mirror_status, mirror, clone, watch, speedtest, count, leech_settings, usage, search
-
-
+from .modules import authorize, list, cancel_mirror, eval, mirror_status, mirror, clone, watch, delete, speedtest, count, leech_settings
 def stats(update, context):
     currentTime = get_readable_time(time.time() - botStartTime)
     total, used, free = shutil.disk_usage('.')
