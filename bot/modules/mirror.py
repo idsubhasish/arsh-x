@@ -159,19 +159,21 @@ class MirrorListener(listeners.MirrorListeners):
                         fs_utils.split(f_path, f_size, filee, dirpath, TG_SPLIT_SIZE)
                         os.remove(f_path)
         if self.isLeech:
-            self._extracted_from_onDownloadComplete_101(up_name, size, gid)
+            LOGGER.info(f"Leech Name: {up_name}")
+            tg = pyrogramEngine.TgUploader(up_name, self)
+            tg_upload_status = TgUploadStatus(tg, size, gid, self)
+            with download_dict_lock:
+                download_dict[self.uid] = tg_upload_status
+            update_all_messages()
+            tg.upload()
         else:
-            self._extracted_from_onDownloadComplete_109(up_name, size, gid)
-
-    # TODO Rename this here and in `onDownloadComplete`
-    def _extracted_from_onDownloadComplete_109(self, up_name, size, gid):
-        LOGGER.info(f"Upload Name: {up_name}")
-        drive = gdriveTools.GoogleDriveHelper(up_name, self)
-        upload_status = UploadStatus(drive, size, gid, self)
-        with download_dict_lock:
-            download_dict[self.uid] = upload_status
-        update_all_messages()
-        drive.upload(up_name)
+            LOGGER.info(f"Upload Name: {up_name}")
+            drive = gdriveTools.GoogleDriveHelper(up_name, self)
+            upload_status = UploadStatus(drive, size, gid, self)
+            with download_dict_lock:
+                download_dict[self.uid] = upload_status
+            update_all_messages()
+            drive.upload(up_name)
 
     # TODO Rename this here and in `onDownloadComplete`
     def _extracted_from_onDownloadComplete_101(self, up_name, size, gid):
