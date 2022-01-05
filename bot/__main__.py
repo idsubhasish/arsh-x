@@ -17,7 +17,7 @@ from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
-from .modules import authorize, list, eval, config, search, cancel_mirror, mirror_status, mirror, clone, watch, shell, delete, speedtest, count, leech_settings, usage
+from .modules import authorize, list, eval, search, cancel_mirror, mirror_status, mirror, clone, watch, shell, delete, speedtest, count, leech_settings
 
 
 def stats(update, context):
@@ -74,17 +74,9 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
-    if Interval:
-        Interval[0].cancel()
-    alive.kill()
-    process = psutil.Process(web.pid)
-    for proc in process.children(recursive=True):
-        proc.kill()
-    process.kill()
     fs_utils.clean_all()
     subprocess.run(["python3", "update.py"])
     # Save restart message object in order to reply to it after restarting
-    nox.kill()
     with open(".restartmsg", "w") as f:
         f.truncate(0)
         f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
