@@ -239,9 +239,18 @@ class MirrorListener(listeners.MirrorListeners):
                 if fmsg != '':
                     time.sleep(1.5)
                     sendMessage(msg + fmsg, self.bot, self.update)
-                else:
-                    update_all_messages()
-            return
+                    with download_dict_lock:
+                        try:
+                            fs_utils.clean_download(download_dict[self.uid].path())
+                        except FileNotFoundError:
+                            pass
+                        del download_dict[self.uid]
+                        count = len(download_dict)
+                    if count == 0:
+                        self.clean()
+                    else:
+                        update_all_messages()
+                    return
         with download_dict_lock:
             msg = f'<b>Name: </b><code>{download_dict[self.uid].name()}</code>\n\n<b>Size: </b>{size}'
             msg += f'\n\n<b>Type: </b>{typ}'
