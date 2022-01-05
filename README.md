@@ -146,8 +146,6 @@ Supported URL Shorteners:
 exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly,
 shorte.st, linkvertise.com , ouo.io
 ```
-- `SEARCH_PLUGINS`: List of qBittorrent search plugins (github raw links). I have added some plugins, you can remove/add plugins as you want. Main Source: [qBittorrent Search Plugins (Official/Unofficial)](https://github.com/qbittorrent/search-plugins/wiki/Unofficial-search-plugins) (**NOTE**: Many plugins will leads to slow search process).
-
 ### Add more buttons (Optional Field)
 Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them empty.
 - `BUTTON_FOUR_NAME`:
@@ -169,15 +167,9 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 mirror - Start mirroring
 zipmirror - Start mirroring and upload as .zip
 unzipmirror - Extract files
-qbmirror - Start mirroring using qBittorrent
-qbzipmirror - Start mirroring and upload as .zip using qb
-qbunzipmirror - Extract files using qBittorrent
 leech - Leech Torrent/Direct link
 zipleech - Leech Torrent/Direct link and upload as .zip
 unzipleech - Leech Torrent/Direct link and extract
-qbleech - Leech Torrent/Magnet using qBittorrent
-qbzipleech - Leech Torrent/Magnet and upload as .zip using qb
-qbunzipleech - Leech Torrent and extract using qb
 clone - Copy file/folder to Drive count - Count file/folder of Drive link
 watch - Mirror yt-dlp supported link
 zipwatch - Mirror playlist link and upload as .zip
@@ -187,7 +179,6 @@ leechset - Leech settings
 setthumb - Set Thumbnail
 status - Get Mirror Status message
 list - [query] Search files in Drive
-search - [query] Search for torrents with installed qbittorrent search plugins
 cancel - Cancel a task
 cancelall - Cancel all tasks
 del - [drive_url] Delete file from Drive
