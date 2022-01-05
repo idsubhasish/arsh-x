@@ -97,9 +97,9 @@ class TgUploader:
                         new_path = os.path.join(dirpath, filee)
                         os.rename(up_path, new_path)
                         up_path = new_path
-                        try:
-                            for i in self.__log_channel:
-                                self.__sent_msg = self.__app.send_video(chat_id=i,
+                    try:
+                        for i in self.__log_channel:
+                            self.__sent_msg = self.__app.send_video(chat_id=i,
                                                               video=up_path,
                                                               caption=cap_mono,
                                                               parse_mode="html",
@@ -110,7 +110,7 @@ class TgUploader:
                                                               supports_streaming=True,
                                                               disable_notification=True,
                                                               progress=self.__upload_progress)
-                        except Exception as err:
+                    except Exception as err:
                                  LOGGER.error(f"Failed to log to channel:\n{err}")
 
 
@@ -142,6 +142,8 @@ class TgUploader:
                                                               progress=self.__upload_progress)
                     except Exception as err:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
+                else:
+                    notMedia = True
 
             if (
                 (self.__as_doc or notMedia)
