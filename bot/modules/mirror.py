@@ -11,7 +11,7 @@ from telegram.ext import CommandHandler
 
 from bot import INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
     BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, \
-    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS, DRIVE_LINK, INDEX_LINK_NAME, DRIVE_LINK_NAME
+    dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGS_CHATS, INDEX_LINK_NAME, DRIVE_LINK_NAME, CUSTOM_CHAT_ID, DUMP_CHANNEL_LINK
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.ext_utils.shortenurl import short_url
@@ -230,15 +230,18 @@ class MirrorListener(listeners.MirrorListeners):
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
-                    link = f"https://t.me/c/{chat_id}/{msg_id}"
+                    link = f"https://t.me/c/{CUSTOM_CHAT_ID}/{msg_id}"
                     fmsg += f"{index}. <a href='{link}'>{item}</a>\n"
+                    buttons = button_build.ButtonMaker()
+                    url = DUMP_CHANNEL_LINK
                     if len(fmsg.encode('utf-8') + msg.encode('utf-8')) > 4000:
                         time.sleep(1.5)
                         sendMessage(msg + fmsg, self.bot, self.update)
                         fmsg = ''
                 if fmsg != '':
                     time.sleep(1.5)
-                    sendMessage(msg + fmsg, self.bot, self.update)
+                    buttons.buildbutton("Click Here to Get Your Leeched Files", url)
+                    sendMarkup(msg + fmsg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
                     with download_dict_lock:
                         try:
                             fs_utils.clean_download(download_dict[self.uid].path())
@@ -259,9 +262,8 @@ class MirrorListener(listeners.MirrorListeners):
                 msg += f'\n<b>Files: </b>{files}'
             buttons = button_build.ButtonMaker()
             link = short_url(link)
-            if DRIVE_LINK:
-                buttons.buildbutton(f"{DRIVE_LINK_NAME}", link)
-                LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
+            buttons.buildbutton(f"{DRIVE_LINK_NAME}", link)
+            LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
             if INDEX_URL is not None:
                 url_path = requests.utils.quote(f'{download_dict[self.uid].name()}')
                 share_url = f'{INDEX_URL}/{url_path}'

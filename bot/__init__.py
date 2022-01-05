@@ -469,29 +469,23 @@ try:
 except KeyError:
     DRIVE_LINK_NAME = '☁️ Drive Link'
     
-try:
-    HEROKU_APP_NAME = getConfig('HEROKU_APP_NAME')
-    if len(HEROKU_APP_NAME) == 0:
-        raise KeyError
-except KeyError:
-    logging.warning('HEROKU_APP_NAME not provided!')
-    HEROKU_APP_NAME = None
 
 try:
-    CHANNEL_USERNAME = getConfig('CHANNEL_USERNAME')
-    if len(CHANNEL_USERNAME) == 0:
+    CUSTOM_CHAT_ID = getConfig('CUSTOM_CHAT_ID')
+    if len(CUSTOM_CHAT_ID) == 0:
         raise KeyError
 except KeyError:
-    logging.warning('CHANNEL_USERNAME not provided!')
-    CHANNEL_USERNAME = None
+    logging.warning('CUSTOM_CHAT_ID not provided!')
+    CUSTOM_CHAT_ID = None
 
 try:
-    HEROKU_API_KEY = getConfig('HEROKU_API_KEY')
-    if len(HEROKU_API_KEY) == 0:
+    DUMP_CHANNEL_LINK = getConfig('DUMP_CHANNEL_LINK')
+    if len(DUMP_CHANNEL_LINK) == 0:
         raise KeyError
 except KeyError:
-    logging.warning('HEROKU_API_KEY not provided!')
-    HEROKU_API_KEY = None
+    logging.warning('DUMP_CHANNEL_LINK not provided!')
+    DUMP_CHANNEL_LINK = None
+
 
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
