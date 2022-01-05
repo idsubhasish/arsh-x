@@ -1,25 +1,19 @@
-from typing import Any
-
+import faulthandler
 import logging
 import os
+import socket
+import subprocess
 import threading
 import time
-import subprocess
-import requests
-import socket
-import faulthandler
+
 import aria2p
 import psycopg2
-import json
-import qbittorrentapi as qba
+import requests
 import telegram.ext as tg
-
-from pyrogram import Client
-from psycopg2 import Error
 from dotenv import load_dotenv
-from pyrogram import Client, filters
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, ChatAdminRequired
-from pyrogram.types import ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton
+from psycopg2 import Error
+from pyrogram import Client
+
 
 faulthandler.enable()
 
@@ -64,17 +58,6 @@ try:
         logging.error(str(e))
 except KeyError:
     pass
-try:
-    SERVER_PORT = getConfig('SERVER_PORT')
-    if len(SERVER_PORT) == 0:
-        raise KeyError
-except KeyError:
-    SERVER_PORT = 80
-
-PORT = os.environ.get('PORT', SERVER_PORT)
-web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
-alive = subprocess.Popen(["python3", "alive.py"])
-nox = subprocess.Popen(["qbittorrent-nox", "--profile=."])
 if not os.path.exists('.netrc'):
     subprocess.run(["touch", ".netrc"])
 subprocess.run(["cp", ".netrc", "/root/.netrc"])
@@ -115,17 +98,7 @@ aria2 = aria2p.API(
     )
 )
 
-def get_client() -> qba.TorrentsAPIMixIn:
-    return qba.Client(host="localhost", port=8090)
 
-"""
-trackers = subprocess.check_output(["curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all | awk '$0'"], shell=True).decode('utf-8')
-
-trackerslist = set(trackers.split("\n"))
-trackerslist.remove("")
-trackerslist = "\n\n".join(trackerslist)
-get_client().application.set_preferences({"add_trackers":f"{trackerslist}"})
-"""
 
 def aria2c_init():
     try:
@@ -403,11 +376,6 @@ try:
 except KeyError:
     BLOCK_MEGA_LINKS = False
 try:
-    WEB_PINCODE = getConfig('WEB_PINCODE')
-    WEB_PINCODE = WEB_PINCODE.lower() == 'true'
-except KeyError:
-    WEB_PINCODE = False
-try:
     SHORTENER = getConfig('SHORTENER')
     SHORTENER_API = getConfig('SHORTENER_API')
     if len(SHORTENER) == 0 or len(SHORTENER_API) == 0:
@@ -428,11 +396,6 @@ except KeyError:
     logging.warning('BASE_URL_OF_BOT not provided!')
     BASE_URL = None
 try:
-    IS_VPS = getConfig('IS_VPS')
-    IS_VPS = IS_VPS.lower() == 'true'
-except KeyError:
-    IS_VPS = False
-try:
     AS_DOCUMENT = getConfig('AS_DOCUMENT')
     AS_DOCUMENT = AS_DOCUMENT.lower() == 'true'
 except KeyError:
@@ -442,11 +405,7 @@ try:
     EQUAL_SPLITS = EQUAL_SPLITS.lower() == 'true'
 except KeyError:
     EQUAL_SPLITS = False
-try:
-    QB_SEED = getConfig('QB_SEED')
-    QB_SEED = QB_SEED.lower() == 'true'
-except KeyError:
-    QB_SEED = False
+
 try:
     CUSTOM_FILENAME = getConfig('CUSTOM_FILENAME')
     if len(CUSTOM_FILENAME) == 0:
@@ -599,20 +558,7 @@ if os.path.exists('drive_folder'):
                 INDEX_URLS.append(temp[2])
             except IndexError as e:
                 INDEX_URLS.append(None)
-try:
-    SEARCH_PLUGINS = getConfig('SEARCH_PLUGINS')
-    if len(SEARCH_PLUGINS) == 0:
-        raise KeyError
-    SEARCH_PLUGINS = json.loads(SEARCH_PLUGINS)
-    qbclient = get_client()
-    qb_plugins = qbclient.search_plugins()
-    if qb_plugins:
-        for plugin in qb_plugins:
-            p = plugin['name']
-            qbclient.search_uninstall_plugin(names=p)
-    qbclient.search_install_plugin(SEARCH_PLUGINS)
-except KeyError:
-    SEARCH_PLUGINS = None
+
 
 updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot

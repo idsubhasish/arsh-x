@@ -12,7 +12,7 @@ import json
 from PIL import Image
 
 from .exceptions import NotSupportedExtractionArchive
-from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, TG_SPLIT_SIZE, EQUAL_SPLITS
+from bot import aria2, LOGGER, DOWNLOAD_DIR, TG_SPLIT_SIZE, EQUAL_SPLITS
 
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
 
@@ -29,7 +29,6 @@ def start_cleanup():
 
 def clean_all():
     aria2.remove_all(True)
-    get_client().torrents_delete(torrent_hashes="all")
     try:
         shutil.rmtree(DOWNLOAD_DIR)
     except FileNotFoundError:
