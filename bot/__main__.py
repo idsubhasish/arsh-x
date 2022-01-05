@@ -115,8 +115,19 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
-<b>/{BotCommands.TorrentSearchCommand}</b> [query]: Search for torrents with API
-<br>sites: <code>rarbg, 1337x, yts, etzv, tgx, torlock, piratebay, nyaasi, ettv</code>
+<b>/{BotCommands.LeechCommand}</b> [link]: Start leeching to Telegram, Use <b>/{BotCommands.LeechCommand} s</b> to select files before leeching
+<br><br>
+<b>/{BotCommands.ZipLeechCommand}</b> [link]: Start leeching to Telegram and upload the file/folder compressed with zip extension
+<br><br>
+<b>/{BotCommands.UnzipLeechCommand}</b> [link]: Start leeching to Telegram and upload the file/folder extracted from any archive extension
+<br><br>
+<b>/{BotCommands.LeechWatchCommand}</b> [yt-dlp supported link]: Leech yt-dlp supported link
+<br><br>
+<b>/{BotCommands.LeechZipWatchCommand}</b> [yt-dlp supported link]: Leech yt-dlp supported link as zip
+<br><br>
+<b>/{BotCommands.LeechSetCommand}</b>: Leech settings
+<br><br>
+<b>/{BotCommands.SetThumbCommand}</b>: Reply photo to set it as Thumbnail
 '''
 
 help = telegraph.create_page(
@@ -148,8 +159,14 @@ botcmds = [
         (f'{BotCommands.StatusCommand}','Get mirror status message'),
         (f'{BotCommands.StatsCommand}','Bot usage stats'),
         (f'{BotCommands.PingCommand}','Ping the bot'),
-        (f'{BotCommands.UsageCommand}', 'Check Heroku Dyno Usage'),
-        (f'{BotCommands.HelpCommand}','Get detailed help')
+        (f'{BotCommands.HelpCommand}','Get detailed help'),
+        (f'{BotCommands.LeechCommand}','Leech'),
+        (f'{BotCommands.ZipLeechCommand}','Leech and upload as zip'),
+        (f'{BotCommands.UnzipLeechCommand}','Leech and extract files'),
+        (f'{BotCommands.LeechWatchCommand}','Leech yt-dlp supported link'),
+        (f'{BotCommands.LeechZipWatchCommand}','Leech yt-dlp supported link as zip'),
+        (f'{BotCommands.LeechSetCommand}', 'Leech settings'),
+        (f'{BotCommands.SetThumbCommand}', 'Set thumbnail'),
     ]
 
 def main():
