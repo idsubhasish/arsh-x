@@ -6,7 +6,7 @@ import threading
 from pyrogram.errors import FloodWait, RPCError
 from PIL import Image
 
-from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LOG_CHANNEL
+from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_video_resolution, get_path_size
 LOGGER = logging.getLogger(__name__)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
@@ -37,7 +37,7 @@ class TgUploader:
         self.__msgs_dict = {}
         self.__corrupted = 0
         self.__user_settings()
-        self.__log_channel = LOG_CHANNEL.copy()  #copy then pop to keep the original var as it is
+        self.__leech_log = LEECH_LOG.copy()  #copy then pop to keep the original var as it is
 
     def upload(self):
         path = f"{DOWNLOAD_DIR}{self.__message_id}"
@@ -98,7 +98,7 @@ class TgUploader:
                         os.rename(up_path, new_path)
                         up_path = new_path
                     try:
-                        for i in self.__log_channel:
+                        for i in self.__leech_log:
                             self.__sent_msg = self.__app.send_video(chat_id=i,
                                                               video=up_path,
                                                               caption=cap_mono,
@@ -117,7 +117,7 @@ class TgUploader:
                 elif filee.upper().endswith(AUDIO_SUFFIXES):
                     duration , artist, title = get_media_info(up_path)
                     try:
-                        for i in self.__log_channel:
+                        for i in self.__leech_log:
                             self.__sent_msg = self.__app.send_audio(chat_id=i,
                                                               audio=up_path,
                                                               caption=cap_mono,
@@ -133,7 +133,7 @@ class TgUploader:
 
                 elif filee.upper().endswith(IMAGE_SUFFIXES):
                     try:
-                        for i in self.__log_channel:
+                        for i in self.__leech_log:
                              self.__sent_msg = self.__app.send_photo(chat_id=i,
                                                               photo=up_path,
                                                               caption=cap_mono,
@@ -156,7 +156,7 @@ class TgUploader:
                         os.remove(thumb)
                     return
                 try:
-                    for i in self.__log_channel:
+                    for i in self.__leech_log:
                         self.__sent_msg = self.__app.send_document(chat_id=i,
                                                          document=up_path,
                                                          thumb=thumb,

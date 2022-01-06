@@ -128,8 +128,8 @@ AUTHORIZED_CHATS = set()
 SUDO_USERS = set()
 AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
-LOGS_CHATS = set()
-LOG_CHANNEL = set()
+MIRROR_LOGS = set()
+LEECH_LOG = set()
 if os.path.exists('authorized_chats.txt'):
     with open('authorized_chats.txt', 'r+') as f:
         lines = f.readlines()
@@ -160,27 +160,27 @@ if os.path.exists("logs_chat.txt"):
         lines = f.readlines()
         for line in lines:
             #    LOGGER.info(line.split())
-            LOGS_CHATS.add(int(line.split()[0]))
+            MIRROR_LOGS.add(int(line.split()[0]))
 try:
-    achats = getConfig("LOGS_CHATS")
+    achats = getConfig("MIRROR_LOGS")
     achats = achats.split(" ")
     for chats in achats:
-        LOGS_CHATS.add(int(chats))
+        MIRROR_LOGS.add(int(chats))
 except:
     logging.warning('Logs Chat Details not provided!')
     pass
 
-if os.path.exists("log_channel.txt"):
+if os.path.exists("LEECH_LOG.txt"):
     with open("logs_chat.txt", "r+") as f:
         lines = f.readlines()
         for line in lines:
             #    LOGGER.info(line.split())
-            LOG_CHANNEL.add(int(line.split()[0]))
+            LEECH_LOG.add(int(line.split()[0]))
 try:
-    achats = getConfig("LOG_CHANNEL")
+    achats = getConfig("LEECH_LOG")
     achats = achats.split(" ")
     for chats in achats:
-        LOG_CHANNEL.add(int(chats))
+        LEECH_LOG.add(int(chats))
 except:
     logging.warning('Log Channel Details not provided!')
     pass
@@ -486,6 +486,22 @@ try:
         AUTHOR_URL = 'https://t.me/heliosmirror'
 except KeyError:
     AUTHOR_URL = 'https://t.me/heliosmirror'
+
+try:
+    CUSTOM_CHAT_ID = getConfig('CUSTOM_CHAT_ID')
+    if len(CUSTOM_CHAT_ID) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('CUSTOM_CHAT_ID not provided!')
+    CUSTOM_CHAT_ID = None
+
+try:
+    DUMP_CHANNEL_LINK = getConfig('DUMP_CHANNEL_LINK')
+    if len(DUMP_CHANNEL_LINK) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('DUMP_CHANNEL_LINK not provided!')
+    DUMP_CHANNEL_LINK = None
 
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')

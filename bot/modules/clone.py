@@ -8,7 +8,7 @@ from bot.helper.telegram_helper.message_utils import *
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval, LOGS_CHATS
+from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval, MIRROR_LOGS
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_gdrive_link, is_gdtot_link, new_thread
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
@@ -90,9 +90,9 @@ def cloneNode(update, context):
             sendMarkup(result + cc, context.bot, update, button)
         if gdtot_link:
             gd.deletefile(link)
-        if LOGS_CHATS:
+        if MIRROR_LOGS:
             try:
-                for i in LOGS_CHATS:
+                for i in MIRROR_LOGS:
                     msg1 = f'<b>File Cloned: </b> <code>{name}</code>\n\n'
                     msg1 += f'<b>Size: </b> {get_readable_file_size(size)}\n\n'
                     msg1 += f'<b>By: </b>{tag}\n\n'
