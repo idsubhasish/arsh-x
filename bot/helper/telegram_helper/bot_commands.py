@@ -1,5 +1,4 @@
 import os
-
 def getCommand(name: str, command: str):
     try:
         if len(os.environ[name]) == 0:
@@ -50,6 +49,11 @@ class _BotCommands:
         self.QbZipLeechCommand = getCommand('QBZIPLEECH_COMMAND', 'qbzipleech')
         self.LeechWatchCommand = getCommand('LEECHWATCH_COMMAND', 'leechwatch')
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_COMMAND', 'leechzipwatch')
-        self.UsageCommand = getCommand('USAGE_COMMAND', 'usage')
+        self.TorrentSearchCommand = getCommand('TOR_COMMAND', 'ts')
+        self.RssListCommand = getCommand('RSSLIST_COMMAND', 'rsslist')
+        self.RssGetCommand = getCommand('RSSGET_COMMAND', 'rssget')
+        self.RssSubCommand = getCommand('RSSSUB_COMMAND', 'rsssub')
+        self.RssUnSubCommand = getCommand('RSSUNSUB_COMMAND', 'rssunsub')
+        self.RssUnSubAllCommand = getCommand('RSSUNSUBALL_COMMAND', 'rssunsuball')
 
 BotCommands = _BotCommands()
