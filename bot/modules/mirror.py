@@ -418,19 +418,6 @@ def _mirror(bot, update, isZip=False, extract=False, isLeech=False, pswd=None):
             LOGGER.info(str(e))
             if str(e).startswith('ERROR:'):
                 return sendMessage(str(e), bot, update)
-    elif not bot_utils.is_magnet(link) and not os.path.exists(link):
-        try:
-            resp = requests.get(link)
-            if resp.status_code == 200:
-                file_name = str(time.time()).replace(".", "") + ".torrent"
-                open(file_name, "wb").write(resp.content)
-                link = f"{file_name}"
-            else:
-                sendMessage(f"ERROR: link got HTTP response: {resp.status_code}", bot, update)
-                return
-        except Exception as e:
-            LOGGER.error(str(e))
-            return
 
     if bot_utils.is_gdrive_link(link):
         if not isZip and not extract and not isLeech:
