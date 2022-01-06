@@ -13,7 +13,7 @@ from telegram import InlineKeyboardMarkup, ParseMode
 
 from bot import Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
                 BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, QB_SEED, \
-                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, MIRROR_LOGS
+                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, MIRROR_LOGS, CUSTOM_CHAT_ID, DUMP_CHANNEL_LINK
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
@@ -216,20 +216,23 @@ class MirrorListener:
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                msg += f'\n<b>Leeched By: </b>{self.tag}\n\n'
+                msg += f'\n<b>cc: </b>{self.tag}\n\n'
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
-                    link = f"https://t.me/c/{chat_id}/{msg_id}"
+                    link = f"https://t.me/c/{CUSTOM_CHAT_ID}/{msg_id}"
                     fmsg += f"{index}. <a href='{link}'>{item}</a>\n"
+                    buttons = button_build.ButtonMaker()
+                    url = DUMP_CHANNEL_LINK
                     if len(fmsg.encode('utf-8') + msg.encode('utf-8')) > 4000:
                         time.sleep(2)
                         sendMessage(msg + fmsg, self.bot, self.update)
                         fmsg = ''
                 if fmsg != '':
-                    time.sleep(2)
-                    sendMessage(msg + fmsg, self.bot, self.update)
-            return
+                    time.sleep(1.5)
+                    buttons.buildbutton("Click Here to Get Your Leeched Files", url)
+                    sendMarkup(msg + fmsg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
+                return
 
         with download_dict_lock:
             msg = f'<b>Name: </b><code>{download_dict[self.uid].name()}</code>\n\n<b>Size: </b>{size}'
@@ -264,7 +267,7 @@ class MirrorListener:
         msg += f'\n\n<b>Uploaded By: </b>{self.tag}'
         if MIRROR_LOGS:
             try:
-                for i in MIRROR_LOGS:
+                for i in MIRROR_LOGS -m :
                     msg1 = f'<b>File Uploaded: </b> <code>{download_dict[self.uid].name()}</code>\n\n'
                     msg1 += f'<b>Size: </b> {size}\n\n'
                     msg1 += f'<b>By: </b>{self.tag}\n\n'
