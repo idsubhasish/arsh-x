@@ -17,8 +17,8 @@ def list_buttons(update, context):
     except IndexError:
         return sendMessage('Send a search key along with command', context.bot, update)
     buttons = button_build.ButtonMaker()
-    buttons.sbutton("Normal", f"types {user_id} root")
-    buttons.sbutton("Deep", f"types {user_id} recu")
+    buttons.sbutton("Drive Root", f"types {user_id} root")
+    buttons.sbutton("Recursive", f"types {user_id} recu")
     buttons.sbutton("Cancel", f"types {user_id} cancel")
     button = InlineKeyboardMarkup(buttons.build_menu(2))
     sendMarkup('Choose option to list.', context.bot, update, button)
@@ -45,23 +45,21 @@ def select_type(update, context):
         query.answer()
         list_method = data[3]
         item_type = data[2]
-        editMessage(f"<b>Searching for <i>{key}</i> Please wait...</b>", msg)
-        threading.Thread(target=list_drive, args=(key, msg, list_method, item_type)).start()
+        editMessage(f"<b>Searching for <i>{key}</i></b>", msg)
+        threading.Thread(target=_list_drive, args=(key, msg, list_method, item_type)).start()
     else:
         query.answer()
-        editMessage("Search has been canceled!", msg)
+        editMessage("list has been canceled!", msg)
 
-
-def list_drive(key, bmsg, list_method, item_type):
-    LOGGER.info(f"Searching: {key}")
+def _list_drive(key, bmsg, list_method, item_type):
+    LOGGER.info(f"listing: {key}")
     list_method = list_method == "recu"
     gdrive = GoogleDriveHelper()
     msg, button = gdrive.drive_list(key, isRecursive=list_method, itemType=item_type)
     if button:
         editMessage(msg, bmsg, button)
     else:
-        editMessage(f'No result found for <i>{key}</i> Use Better Keywords', bmsg)
-
+        editMessage(f'No result found for <i>{key}</i>', bmsg)
 
 list_handler = CommandHandler(BotCommands.ListCommand, list_buttons, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 list_type_handler = CallbackQueryHandler(select_type, pattern="types", run_async=True)

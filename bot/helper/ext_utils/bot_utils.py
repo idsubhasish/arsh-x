@@ -4,6 +4,8 @@ import time
 import math
 import psutil
 import shutil
+import requests
+import urllib.request
 
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot import dispatcher, download_dict, download_dict_lock, STATUS_LIMIT, botStartTime
@@ -93,7 +95,6 @@ def getAllDownload():
                     MirrorStatus.STATUS_CLONING,
                     MirrorStatus.STATUS_UPLOADING,
                     MirrorStatus.STATUS_CHECKING,
-                    MirrorStatus.STATUS_SEEDING,
                 ]
                 and dlDetails
             ):
@@ -106,22 +107,22 @@ def get_progress_bar_string(status):
     p = 0 if total == 0 else round(completed * 100 / total)
     p = min(max(p, 0), 100)
     cFull = p // 8
-    p_str = '█' * cFull #https://changaco.oy.lc/unicode-progress-bars
-    p_str += '░' * (11 - cFull)
+    p_str = '▰' * cFull
+    p_str += '▱' * (12 - cFull)
     p_str = f"[{p_str}]"
     return p_str
 
 def get_readable_message():
     with download_dict_lock:
         msg = ""
-        START = 0
         dlspeed_bytes = 0
         uldl_bytes = 0
+        START = 0
         if STATUS_LIMIT is not None:
-            dick_no = len(download_dict)
+            tasks = len(download_dict)
             global pages
-            pages = math.ceil(dick_no/STATUS_LIMIT)
-            if pages != 0 and PAGE_NO > pages:
+            pages = math.ceil(tasks/STATUS_LIMIT)
+            if PAGE_NO > pages and pages != 0:
                 globals()['COUNT'] -= STATUS_LIMIT
                 globals()['PAGE_NO'] -= 1
             START = COUNT
@@ -183,36 +184,42 @@ def get_readable_message():
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        bmsg += f"\n<b>RAM:</b> {psutil.virtual_memory().percent}% | <b>UPTIME:</b> {currentTime}" \
-                f"\n<b>DL:</b> {dlspeed}/s | <b>UL:</b> {ulspeed}/s"
-        if STATUS_LIMIT is not None and dick_no > STATUS_LIMIT:
-            msg += f"<b>Page:</b> {PAGE_NO}/{pages} | <b>Tasks:</b> {dick_no}\n"
+        bmsg += f"\n<b>RAM:</b> {psutil.virtual_memory().percent}% | <b>UPTIME:</b> {currentTime}"
+        bmsg += f"\n<b>DL:</b> {dlspeed}/s | <b>UL:</b> {ulspeed}/s"
+        if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
+            msg += f"<b>Page:</b> {PAGE_NO}/{pages} | <b>Tasks:</b> {tasks}\n"
             buttons = button_build.ButtonMaker()
-            buttons.sbutton("Previous", "pre")
-            buttons.sbutton("Next", "nex")
+            buttons.sbutton("Previous", "status pre")
+            buttons.sbutton("Next", "status nex")
             button = InlineKeyboardMarkup(buttons.build_menu(2))
             return msg + bmsg, button
         return msg + bmsg, ""
 
 def turn(update, context):
     query = update.callback_query
+    data = query.data
+    data = data.split(' ')
     query.answer()
-    global COUNT, PAGE_NO
-    if query.data == "nex":
-        if PAGE_NO == pages:
-            COUNT = 0
-            PAGE_NO = 1
-        else:
-            COUNT += STATUS_LIMIT
-            PAGE_NO += 1
-    elif query.data == "pre":
-        if PAGE_NO == 1:
-            COUNT = STATUS_LIMIT * (pages - 1)
-            PAGE_NO = pages
-        else:
-            COUNT -= STATUS_LIMIT
-            PAGE_NO -= 1
-    message_utils.update_all_messages()
+    try:
+        with download_dict_lock:
+            global COUNT, PAGE_NO
+            if data[1] == "nex":
+                if PAGE_NO == pages:
+                    COUNT = 0
+                    PAGE_NO = 1
+                else:
+                    COUNT += STATUS_LIMIT
+                    PAGE_NO += 1
+            elif data[1] == "pre":
+                if PAGE_NO == 1:
+                    COUNT = STATUS_LIMIT * (pages - 1)
+                    PAGE_NO = pages
+                else:
+                    COUNT -= STATUS_LIMIT
+                    PAGE_NO -= 1
+        message_utils.update_all_messages()
+    except:
+        query.message.delete()
 
 def get_readable_time(seconds: int) -> str:
     result = ''
@@ -271,8 +278,21 @@ def new_thread(fn):
 
     return wrapper
 
+def get_content_type(link: str):
+    try:
+        res = requests.head(link, allow_redirects=True, timeout=5)
+        content_type = res.headers.get('content-type')
+    except:
+        content_type = None
 
-next_handler = CallbackQueryHandler(turn, pattern="nex", run_async=True)
-previous_handler = CallbackQueryHandler(turn, pattern="pre", run_async=True)
-dispatcher.add_handler(next_handler)
-dispatcher.add_handler(previous_handler)
+    if content_type is None:
+        try:
+            res = urllib.request.urlopen(link, timeout=5)
+            info = res.info()
+            content_type = info.get_content_type()
+        except:
+            content_type = None
+    return content_type
+
+status_handler = CallbackQueryHandler(turn, pattern="status", run_async=True)
+dispatcher.add_handler(status_handler)

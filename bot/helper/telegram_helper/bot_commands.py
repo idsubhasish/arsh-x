@@ -50,6 +50,10 @@ class _BotCommands:
         self.LeechWatchCommand = getCommand('LEECHWATCH_COMMAND', 'leechwatch')
         self.LeechZipWatchCommand = getCommand('LEECHZIPWATCH_COMMAND', 'leechzipwatch')
         self.TorrentSearchCommand = getCommand('TOR_COMMAND', 'ts')
-        self.UsageCommand = getCommand('USAGE_COMMAND', 'usage')
-        self.ConfigMenuCommand = getCommand('CONFIG_COMMAND', 'config')
+        self.RssListCommand = getCommand('RSSLIST_COMMAND', 'rsslist')
+        self.RssGetCommand = getCommand('RSSGET_COMMAND', 'rssget')
+        self.RssSubCommand = getCommand('RSSSUB_COMMAND', 'rsssub')
+        self.RssUnSubCommand = getCommand('RSSUNSUB_COMMAND', 'rssunsub')
+        self.RssUnSubAllCommand = getCommand('RSSUNSUBALL_COMMAND', 'rssunsuball')
+
 BotCommands = _BotCommands()
