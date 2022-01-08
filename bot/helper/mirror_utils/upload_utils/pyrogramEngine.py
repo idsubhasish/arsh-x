@@ -6,8 +6,12 @@ import threading
 from pyrogram.errors import FloodWait, RPCError
 from PIL import Image
 
-from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG, BOT_PM
+from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG, BOT_PM, BOT_NAME
+from bot.helper.telegram_helper.message_utils import *
+
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_video_resolution, get_path_size
+from bot.helper.telegram_helper.message_utils import *
+
 LOGGER = logging.getLogger(__name__)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
@@ -115,9 +119,12 @@ class TgUploader:
                                  LOGGER.error(f"Failed to log to channel:\n{err}")
                     if BOT_PM:
                         try:
+                            msg = f'Start the bot in PM to get the files directly in your PM\n'
+                            msg += f'Click on @{BOT_NAME} to Start the bot \n'
                             app.send_video(chat_id=self.__user_id, video=self.__sent_msg.video.file_id, caption=cap_mono)
                         except Exception as f:
                             LOGGER.error(f"Failed To Send In Inbox:\n{f}")
+                            bot.sendMessage(chat_id=self.__chat_id, text=msg,)
 
 
                 elif filee.upper().endswith(AUDIO_SUFFIXES):
@@ -138,9 +145,13 @@ class TgUploader:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
                     if BOT_PM:
                         try:
+                            msg = f'Start the bot in PM to get the files directly in your PM. \n'
+                            msg += f'Click on @{BOT_NAME} to Start the bot \n'
                             app.send_audio(chat_id=self.__user_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
                         except Exception as f:
                             LOGGER.error(f"Failed To Send In Inbox:\n{f}")
+                            bot.sendMessage(chat_id=self.__chat_id,
+                                            text=msg,)
 
                 elif filee.upper().endswith(IMAGE_SUFFIXES):
                     try:
@@ -157,9 +168,13 @@ class TgUploader:
                     notMedia = True
                     if BOT_PM:
                         try:
+                            msg = f'Start the bot in PM to get the files directly in your PM. \n'
+                            msg += f'Click on @{BOT_NAME} to Start the bot \n'
                             app.send_photo(chat_id=self.__user_id, photo=self.__sent_msg.photo.file_id, caption=cap_mono)
                         except Exception as f:
                             LOGGER.error(f"Failed To Send In Inbox:\n{f}")
+                            bot.sendMessage(chat_id=self.__chat_id,
+                                            text=msg,)
 
             if (
                 (self.__as_doc or notMedia)
@@ -184,10 +199,14 @@ class TgUploader:
                     LOGGER.error(f"Failed to log to channel:\n{err}")
                     if BOT_PM:
                         try:
+                            msg = f'Start the bot in PM to get the files directly in your PM. \n'
+                            msg += f'Click on @{BOT_NAME} to Start the bot \n'
                             app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id,
                                               caption=cap_mono)
                         except Exception as f:
                             LOGGER.error(f"Failed To Send In Inbox:\n{f}")
+                            bot.sendMessage(chat_id=self.__chat_id,
+                                            text=msg,)
 
         except FloodWait as f:
             LOGGER.warning(str(f))

@@ -504,6 +504,15 @@ except KeyError:
     DUMP_CHANNEL_LINK = None
 
 try:
+    BOT_NAME = getConfig('BOT_NAME')
+    if len(BOT_NAME) == 0:
+        raise KeyError
+except KeyError:
+    logging.warning('BOT_NAME not provided!') 
+    BOT_NAME = None
+
+    
+try:
     BOT_PM = getConfig('BOT_PM')
     BOT_PM = BOT_PM.lower() == 'true'
 except KeyError:
