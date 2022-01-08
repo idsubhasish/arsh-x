@@ -6,7 +6,7 @@ import threading
 from pyrogram.errors import FloodWait, RPCError
 from PIL import Image
 
-from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG
+from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG, BOT_PM
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_video_resolution, get_path_size
 LOGGER = logging.getLogger(__name__)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
@@ -31,6 +31,7 @@ class TgUploader:
         self.__chat_id = listener.message.chat.id
         self.__message_id = listener.uid
         self.__user_id = listener.message.from_user.id
+        self.user_id = listener.message.from_user.id
         self.__as_doc = AS_DOCUMENT
         self.__thumb = f"Thumbnails/{self.__user_id}.jpg"
         self.__sent_msg = self.__app.get_messages(self.__chat_id, self.__message_id)
@@ -112,6 +113,11 @@ class TgUploader:
                                                               progress=self.__upload_progress)
                     except Exception as err:
                                  LOGGER.error(f"Failed to log to channel:\n{err}")
+                    if BOT_PM:
+                        try:
+                            app.send_video(chat_id=self.__user_id, video=self.__sent_msg.video.file_id, caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send In Inbox:\n{f}")
 
 
                 elif filee.upper().endswith(AUDIO_SUFFIXES):
@@ -130,6 +136,11 @@ class TgUploader:
                                                               progress=self.__upload_progress)
                     except Exception as err:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
+                    if BOT_PM:
+                        try:
+                            app.send_audio(chat_id=self.__user_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send In Inbox:\n{f}")
 
                 elif filee.upper().endswith(IMAGE_SUFFIXES):
                     try:
@@ -144,6 +155,11 @@ class TgUploader:
                         LOGGER.error(f"Failed to log to channel:\n{err}")
                 else:
                     notMedia = True
+                    if BOT_PM:
+                        try:
+                            app.send_photo(chat_id=self.__user_id, photo=self.__sent_msg.photo.file_id, caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send In Inbox:\n{f}")
 
             if (
                 (self.__as_doc or notMedia)
@@ -166,6 +182,12 @@ class TgUploader:
                                                          progress=self.__upload_progress)
                 except Exception as err:
                     LOGGER.error(f"Failed to log to channel:\n{err}")
+                    if BOT_PM:
+                        try:
+                            app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id,
+                                              caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send In Inbox:\n{f}")
 
         except FloodWait as f:
             LOGGER.warning(str(f))
