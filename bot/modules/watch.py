@@ -6,7 +6,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from time import sleep
 
 from bot import DOWNLOAD_DIR, dispatcher, LOGGER, BOT_PM, CHANNEL_USERNAME
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot
+from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot, auto_delete_message
 from bot.helper.telegram_helper import button_build
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_url
 from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
@@ -24,8 +24,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     msg_id = update.message.message_id
     if BOT_PM:
         try:
-            msg1 = f'Added your Requested link to Download\n'
-            bot.sendMessage(update.message.from_user.id, text=msg1, )
+            msg1 = f'Added your Requested link to download\n'
+            send = bot.sendMessage(update.message.from_user.id, text=msg1, )
+            send.delete()
         except Exception as e:
             LOGGER.warning(e)
             bot_d = bot.get_me()
@@ -36,9 +37,10 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
             keyboard = [
                 [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
                 [InlineKeyboardButton("Join Our Updates Channel", url=f"t.me/{channel}")]]
-            sendMarkup(
+            message = sendMarkup(
                 f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
                 bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
+            threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
             return
 
     try:
@@ -75,7 +77,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     if not is_url(link):
         help_msg = "Send link along with command line"
         help_msg += "\nor reply to link or file"
-        return sendMessage(help_msg, bot, update)
+        message = sendMessage(help_msg, bot, update)
+        threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
+        return
 
     LOGGER.info(link)
     listener = MirrorListener(bot, update, isZip, isLeech=isLeech, pswd=pswd, tag=tag)

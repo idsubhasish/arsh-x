@@ -7,7 +7,6 @@ import threading
 import re
 import time
 import shutil
-
 from telegram.ext import CommandHandler
 from telegram import InlineKeyboardMarkup, ParseMode, InlineKeyboardButton
 from telegram.message import Message
@@ -330,7 +329,8 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     if BOT_PM:
         try:
             msg1 = f'Added your Requested link to Download\n'
-            bot.sendMessage(update.message.from_user.id, text=msg1,)
+            send = bot.sendMessage(update.message.from_user.id, text=msg1,)
+            send.delete()
         except Exception as e:
             LOGGER.warning(e)
             bot_d = bot.get_me()
@@ -341,9 +341,10 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
             keyboard = [
                 [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
                 [InlineKeyboardButton("Join Our Updates Channel", url=f"t.me/{channel}")]]
-            sendMarkup(
-                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
+            message = sendMarkup(
+                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only",
                 bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
+            threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
             return
     mesg = update.message.text.split('\n')
     message_args = mesg[0].split(' ', maxsplit=1)
@@ -423,7 +424,9 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link):
         help_msg = "Send link along with command line"
         help_msg += "\nor reply to link or file"
-        return sendMessage(help_msg, bot, update)
+        message = sendMessage(help_msg, bot, update)
+        threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
+        return
 
     LOGGER.info(link)
     gdtot_link = bot_utils.is_gdtot_link(link)
@@ -470,7 +473,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
 
     elif bot_utils.is_mega_link(link):
         if BLOCK_MEGA_LINKS:
-            sendMessage("Mega links are blocked!", bot, update)
+            sendMessage("Mega links are blocked! ", bot, update)
             return
         link_type = bot_utils.get_mega_link_type(link)
         if link_type == "folder" and BLOCK_MEGA_FOLDER:

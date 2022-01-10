@@ -1,6 +1,6 @@
 import random
 import string
-
+import threading
 from telegram.ext import CommandHandler
 from telegram import InlineKeyboardMarkup, ParseMode, InlineKeyboardButton
 from bot.helper.mirror_utils.upload_utils import gdriveTools
@@ -17,8 +17,9 @@ from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 def cloneNode(update, context):
     if BOT_PM:
         try:
-            msg1 = f'Added your Requested link to Clone.\n'
-            bot.sendMessage(update.message.from_user.id, text=msg1, )
+            msg1 = f'Added your Requested link to clone\n'
+            send = bot.sendMessage(update.message.from_user.id, text=msg1,)
+            send.delete()
         except Exception as e:
             LOGGER.warning(e)
             bot_d = bot.get_me()
@@ -29,9 +30,10 @@ def cloneNode(update, context):
             keyboard = [
                 [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
                 [InlineKeyboardButton("Join our Updates Channel", url=f"t.me/{channel}")]]
-            sendMarkup(
+            message = sendMarkup(
                 f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
                 bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
+            threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
             return
     args = update.message.text.split(" ", maxsplit=1)
     reply_to = update.message.reply_to_message
@@ -125,7 +127,9 @@ def cloneNode(update, context):
                     return
 
     else:
-        sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', context.bot, update)
+        message = sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', context.bot, update)
+        threading.Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
+        return
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
