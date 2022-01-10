@@ -2,10 +2,10 @@ import threading
 import re
 
 from telegram.ext import CommandHandler, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from time import sleep
 
-from bot import DOWNLOAD_DIR, dispatcher, LOGGER
+from bot import DOWNLOAD_DIR, dispatcher, LOGGER, BOT_PM, CHANNEL_USERNAME
 from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot
 from bot.helper.telegram_helper import button_build
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_url
@@ -24,15 +24,21 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     msg_id = update.message.message_id
     if BOT_PM:
         try:
-            msg1 = f'Your download is Processing.....\n'
-            bot.sendMessage(chat_id=user_id, text=msg1, )
+            msg1 = f'Added your Requested link to Download\n'
+            bot.sendMessage(update.message.from_user.id, text=msg1, )
         except Exception as e:
             LOGGER.warning(e)
-            buttons = button_build.ButtonMaker()
-            msg3 = f'Start the bot in PM to get the links directly in your PM. \n'
-            url = f"https://t.me/{BOT_NAME}"
-            buttons.buildbutton("Click Here to start the bot", url)
-            sendMarkup(msg3, bot, update, InlineKeyboardMarkup(buttons.build_menu(2)))
+            bot_d = bot.get_me()
+            b_uname = bot_d.username
+            uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
+            channel = CHANNEL_USERNAME
+            botstart = f"http://t.me/{b_uname}"
+            keyboard = [
+                [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
+                [InlineKeyboardButton("Join Our Updates Channel", url=f"t.me/{channel}")]]
+            sendMarkup(
+                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
+                bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
             return
 
     try:
