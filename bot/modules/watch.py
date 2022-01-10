@@ -6,7 +6,7 @@ from telegram import InlineKeyboardMarkup
 from time import sleep
 
 from bot import DOWNLOAD_DIR, dispatcher, LOGGER
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage
+from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot
 from bot.helper.telegram_helper import button_build
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_url
 from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
@@ -22,6 +22,18 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     name_args = mssg.split('|', maxsplit=1)
     user_id = update.message.from_user.id
     msg_id = update.message.message_id
+    if BOT_PM:
+        try:
+            msg1 = f'Your download is Processing.....\n'
+            bot.sendMessage(chat_id=user_id, text=msg1, )
+        except Exception as e:
+            LOGGER.warning(e)
+            buttons = button_build.ButtonMaker()
+            msg3 = f'Start the bot in PM to get the links directly in your PM. \n'
+            url = f"https://t.me/{BOT_NAME}"
+            buttons.buildbutton("Click Here to start the bot", url)
+            sendMarkup(msg3, bot, update, InlineKeyboardMarkup(buttons.build_menu(2)))
+            return
 
     try:
         link = message_args[1].strip()

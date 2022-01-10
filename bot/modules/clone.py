@@ -2,19 +2,37 @@ import random
 import string
 
 from telegram.ext import CommandHandler
-from telegram import InlineKeyboardMarkup, ParseMode
+from telegram import InlineKeyboardMarkup, ParseMode, InlineKeyboardButton
 from bot.helper.mirror_utils.upload_utils import gdriveTools
 from bot.helper.telegram_helper.message_utils import *
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval, MIRROR_LOGS
+from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval, MIRROR_LOGS, BOT_PM, CHANNEL_USERNAME
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_gdrive_link, is_gdtot_link, new_thread
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
 @new_thread
 def cloneNode(update, context):
+    if BOT_PM:
+        try:
+            msg1 = f'Added your Requested link to Clone.\n'
+            bot.sendMessage(update.message.from_user.id, text=msg1, )
+        except Exception as e:
+            LOGGER.warning(e)
+            bot_d = bot.get_me()
+            b_uname = bot_d.username
+            uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
+            channel = CHANNEL_USERNAME
+            botstart = f"http://t.me/{b_uname}"
+            keyboard = [
+                [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
+                [InlineKeyboardButton("Join our Updates Channel", url=f"t.me/{channel}")]]
+            sendMarkup(
+                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
+                bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
+            return
     args = update.message.text.split(" ", maxsplit=1)
     reply_to = update.message.reply_to_message
     if len(args) > 1:
@@ -99,6 +117,13 @@ def cloneNode(update, context):
                     bot.sendMessage(chat_id=i, text=msg1, reply_markup=button, parse_mode=ParseMode.HTML)
             except Exception as e:
                 LOGGER.warning(e)
+            if BOT_PM:
+                try:
+                    bot.sendMessage(update.message.from_user.id, text=msg1, reply_markup=button, parse_mode=ParseMode.HTML)
+                except Exception as e:
+                    LOGGER.warning(e)
+                    return
+
     else:
         sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', context.bot, update)
 

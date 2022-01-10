@@ -504,19 +504,18 @@ except KeyError:
     DUMP_CHANNEL_LINK = None
 
 try:
-    BOT_NAME = getConfig('BOT_NAME')
-    if len(BOT_NAME) == 0:
-        raise KeyError
-except KeyError:
-    logging.warning('BOT_NAME not provided!') 
-    BOT_NAME = None
-
-    
-try:
     BOT_PM = getConfig('BOT_PM')
     BOT_PM = BOT_PM.lower() == 'true'
 except KeyError:
     BOT_PM = False
+
+try:
+    CHANNEL_USERNAME: str = getConfig('CHANNEL_USERNAME').replace("@", "")
+    if len(CHANNEL_USERNAME) == 0:
+        CHANNEL_USERNAME = 'heliosmirror'
+except KeyError:
+    logging.warning('CHANNEL_USERNAME not provided')
+    CHANNEL_USERNAME = 'heliosmirror'
 
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')

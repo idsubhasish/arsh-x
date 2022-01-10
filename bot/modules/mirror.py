@@ -9,11 +9,14 @@ import time
 import shutil
 
 from telegram.ext import CommandHandler
-from telegram import InlineKeyboardMarkup, ParseMode
+from telegram import InlineKeyboardMarkup, ParseMode, InlineKeyboardButton
+from telegram.message import Message
+from telegram.update import Update
 
 from bot import Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
                 BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, aria2, QB_SEED, \
-                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, MIRROR_LOGS, CUSTOM_CHAT_ID, DUMP_CHANNEL_LINK, BOT_PM, BOT_NAME
+                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, \
+                MIRROR_LOGS, CUSTOM_CHAT_ID, DUMP_CHANNEL_LINK, BOT_PM, CHANNEL_USERNAME
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
@@ -234,7 +237,7 @@ class MirrorListener:
                         fmsg = ''
                 if fmsg != '':
                     time.sleep(1.5)
-                    buttons.buildbutton("Click Here to Get Your Leeched Files", url)
+                    buttons.buildbutton("Log Channel", url)
                     sendMarkup(msg + fmsg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
                 return
 
@@ -281,23 +284,14 @@ class MirrorListener:
             except Exception as e:
                 LOGGER.warning(e)
 
-        if BOT_PM:
-            try:
-                    msg1 = f'<b>File Uploaded: </b> <code>{download_dict[self.uid].name()}</code>\n\n'
-                    msg1 += f'<b>Size: </b> {size}\n\n'
-                    msg1 += f'<b>By: </b>{self.tag}\n\n'
-
-                    bot.sendMessage(chat_id=self.user_id, text=msg1,
+            if BOT_PM:
+                try:
+                        bot.sendMessage(chat_id=self.user_id, text=msg1,
                                     reply_markup=InlineKeyboardMarkup(buttons.build_menu(2)),
                                     parse_mode=ParseMode.HTML)
-            except Exception as e:
-                LOGGER.warning(e)
-                buttons = button_build.ButtonMaker()
-                msg3 = f'Start the bot in PM to get the links directly in your PM. \n'
-                url = f"https://t.me/{BOT_NAME}"
-                buttons.buildbutton("Click Here to start the bot", url)
-                sendMarkup(msg3, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
-                return
+                except Exception as e:
+                    LOGGER.warning(e)
+                    return
 
         if self.isQbit and QB_SEED:
            return sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
@@ -331,6 +325,26 @@ class MirrorListener:
             update_all_messages()
 
 def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None):
+    #user_id = update.effective_user.id
+    #chat_id = update.effective_chat.id
+    if BOT_PM:
+        try:
+            msg1 = f'Added your Requested link to Download\n'
+            bot.sendMessage(update.message.from_user.id, text=msg1,)
+        except Exception as e:
+            LOGGER.warning(e)
+            bot_d = bot.get_me()
+            b_uname = bot_d.username
+            uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
+            channel = CHANNEL_USERNAME
+            botstart = f"http://t.me/{b_uname}"
+            keyboard = [
+                [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
+                [InlineKeyboardButton("Join Our Updates Channel", url=f"t.me/{channel}")]]
+            sendMarkup(
+                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
+                bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
+            return
     mesg = update.message.text.split('\n')
     message_args = mesg[0].split(' ', maxsplit=1)
     name_args = mesg[0].split('|', maxsplit=1)
