@@ -510,6 +510,12 @@ except KeyError:
     BOT_PM = False
 
 try:
+    SEND_IN_CURRENT_GROUP = getConfig('SEND_IN_CURRENT_GROUP')
+    SEND_IN_CURRENT_GROUP = SEND_IN_CURRENT_GROUP.lower() == 'true'
+except KeyError:
+    SEND_IN_CURRENT_GROUP = False
+
+try:
     CHANNEL_USERNAME: str = getConfig('CHANNEL_USERNAME').replace("@", "")
     if len(CHANNEL_USERNAME) == 0:
         CHANNEL_USERNAME = 'heliosmirror'

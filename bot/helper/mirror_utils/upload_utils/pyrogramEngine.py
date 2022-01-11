@@ -6,7 +6,7 @@ import threading
 from pyrogram.errors import FloodWait, RPCError
 from PIL import Image
 
-from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG, BOT_PM
+from bot import app, DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, LEECH_LOG, BOT_PM, SEND_IN_CURRENT_GROUP
 from bot.helper.telegram_helper.message_utils import *
 
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_video_resolution, get_path_size
@@ -102,10 +102,8 @@ class TgUploader:
                         new_path = os.path.join(dirpath, filee)
                         os.rename(up_path, new_path)
                         up_path = new_path
-                    if BOT_PM:
-                        try:
-                            for i in self.__leech_log:
-                                self.__sent_msg = self.__app.send_video(chat_id=i,
+                        for i in self.__leech_log:
+                            self.__sent_msg = self.__app.send_video(chat_id=i,
                                                               video=up_path,
                                                               caption=cap_mono,
                                                               parse_mode="html",
@@ -116,19 +114,22 @@ class TgUploader:
                                                               supports_streaming=True,
                                                               disable_notification=True,
                                                               progress=self.__upload_progress)
-                        except Exception as err:
-                                 LOGGER.error(f"Failed to send in Log Channel:\n{err}")
-                    try:
-                        app.send_video(chat_id=self.__user_id, video=self.__sent_msg.video.file_id, caption=cap_mono)
-                    except Exception as f:
-                        LOGGER.error(f"Failed To Send in PM:\n{f}")
+                        if BOT_PM:
+                            try:
+                                app.send_video(chat_id=self.__user_id, video=self.__sent_msg.video.file_id, caption=cap_mono)
+                            except Exception as f:
+                                LOGGER.error(f"Failed To Send in PM:\n{f}")
+                        if SEND_IN_CURRENT_GROUP:
+                            try:
+                                app.send_video(chat_id=self.__chat_id, video=self.__sent_msg.video.file_id,
+                                               caption=cap_mono)
+                            except Exception as err:
+                                 LOGGER.error(f"Failed to send in Current Group:\n{err}")
 
 
                 elif filee.upper().endswith(AUDIO_SUFFIXES):
                     duration , artist, title = get_media_info(up_path)
-                    if BOT_PM:
-                        try:
-                            for i in self.__leech_log:
+                    for i in self.__leech_log:
                                 self.__sent_msg = self.__app.send_audio(chat_id=i,
                                                               audio=up_path,
                                                               caption=cap_mono,
@@ -139,29 +140,35 @@ class TgUploader:
                                                               thumb=thumb,
                                                               disable_notification=True,
                                                               progress=self.__upload_progress)
-                        except Exception as err:
-                                LOGGER.error(f"Failed to send in Log Channel:\n{err}")
-                    try:
-                        app.send_audio(chat_id=self.__user_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
-                    except Exception as f:
-                            LOGGER.error(f"Failed To Send in PM:\n{f}")
-
-                elif filee.upper().endswith(IMAGE_SUFFIXES):
                     if BOT_PM:
                         try:
-                            for i in self.__leech_log:
-                                self.__sent_msg = self.__app.send_photo(chat_id=i,
+                            app.send_audio(chat_id=self.__user_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send in PM:\n{f}")
+                    if SEND_IN_CURRENT_GROUP:
+                        try:
+                            app.send_audio(chat_id=self.__chat_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
+                        except Exception as f:
+                            LOGGER.error(f"Failed To Send in Current Group:\n{f}")
+
+                elif filee.upper().endswith(IMAGE_SUFFIXES):
+                    for i in self.__leech_log:
+                        self.__sent_msg = self.__app.send_photo(chat_id=i,
                                                               photo=up_path,
                                                               caption=cap_mono,
                                                               parse_mode="html",
                                                               disable_notification=True,
                                                               progress=self.__upload_progress)
-                        except Exception as err:
-                            LOGGER.error(f"Failed to send in LOg Channel:\n{err}")
-                    try:
-                        app.send_photo(chat_id=self.__user_id, photo=self.__sent_msg.photo.file_id, caption=cap_mono)
-                    except Exception as f:
-                            LOGGER.error(f"Failed To Send in PM:\n{f}")
+                        if BOT_PM:
+                            try:
+                                app.send_photo(chat_id=self.__user_id, photo=self.__sent_msg.photo.file_id, caption=cap_mono)
+                            except Exception as f:
+                                LOGGER.error(f"Failed To Send in PM:\n{f}")
+                        if SEND_IN_CURRENT_GROUP:
+                            try:
+                                app.send_photo(chat_id=self.__chat_id, photo=self.__sent_msg.photo.file_id, caption=cap_mono)
+                            except Exception as f:
+                                LOGGER.error(f"Failed To Send in Currnt Group:\n{f}")
                 else:
                     notMedia = True
 
@@ -175,22 +182,24 @@ class TgUploader:
                     if self.__thumb is None and thumb is not None and os.path.lexists(thumb):
                         os.remove(thumb)
                     return
-                if BOT_PM:
-                    try:
-                        self.__sent_msg = self.__app.send_document(chat_id=self.__user_id,
+                for i in self.__leech_log:
+                        self.__sent_msg = self.__app.send_document(chat_id=i,
                                                          document=up_path,
                                                          thumb=thumb,
                                                          caption=cap_mono,
                                                          parse_mode="html",
                                                          disable_notification=True,
                                                          progress=self.__upload_progress)
-                    except Exception as err:
-                        LOGGER.error(f"Failed to send in PM:\n{err}")
-                try:
-                    for i in self.__leech_log:
-                        app.send_document(chat_id=i, document=self.__sent_msg.document.file_id, caption=cap_mono)
-                except Exception as f:
-                    LOGGER.error(f"Failed To Send in Log Channel:\n{f}")
+                if BOT_PM:
+                    try:
+                        app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id, caption=cap_mono)
+                    except Exception as f:
+                        LOGGER.error(f"Failed To Send in PM:\n{f}")
+                if SEND_IN_CURRENT_GROUP:
+                    try:
+                        app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id, caption=cap_mono)
+                    except Exception as f:
+                        LOGGER.error(f"Failed To Send in Current Group:\n{f}")
 
         except FloodWait as f:
             LOGGER.warning(str(f))
